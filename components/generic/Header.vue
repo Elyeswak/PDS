@@ -1,0 +1,279 @@
+<template>
+  <header class="bg-[#0a0a0a] text-white">
+    <div class="relative">
+      <nav class="relative z-10">
+        <div class="container mx-auto px-2">
+          <div class="flex items-center justify-center gap-x-52 h-14">
+            <div
+              class="hidden lg:flex items-center space-x-10 font-medium justify-center"
+            >
+              <NuxtLink
+                to="/"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                HOME +
+              </NuxtLink>
+              <NuxtLink
+                to="/about"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                ABOUT US
+              </NuxtLink>
+              <NuxtLink
+                to="/services"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                SERVICES
+              </NuxtLink>
+              <NuxtLink
+                to="/testimonial"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                TESTIMONIAL
+              </NuxtLink>
+              <NuxtLink
+                to="/blog"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                BLOG
+              </NuxtLink>
+              <NuxtLink
+                to="/contact"
+                class="text-white hover:text-gray-300 transition-colors text-base"
+              >
+                CONTACT US
+              </NuxtLink>
+            </div>
+
+            <div class="hidden lg:flex items-end space-x-6">
+              <NuxtLink
+                to="/location"
+                class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <span class="font-normal tracking-wider">OFFICE LOCATION</span>
+              </NuxtLink>
+            </div>
+
+            <button @click="toggleMobileMenu" class="lg:hidden text-white">
+              <svg
+                v-if="!isMobileMenuOpen"
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                v-else
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div class="relative overflow-hidden bg-[#1a1a1a]">
+        <div class="absolute inset-0">
+          <div
+            class="absolute left-0 top-0 bottom-0 w-[35%] bg-[#ff4500]"
+            style="clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%)"
+          ></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto px-6">
+          <div
+            class="flex flex-col md:flex-row items-center justify-start md:ml-[35%] py-4 space-y-2 md:space-y-0 md:space-x-12"
+          >
+            <div class="flex items-center space-x-2">
+              <div
+                class="flex items-center justify-center w-12 h-12"
+              >
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-gray-400 mb-0.5">Make An Email</p>
+                <p class="font-semibold text-white">info@malen.com</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <div
+                class="flex items-center justify-center w-12 h-12"
+              >
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-gray-400 mb-0.5">Call Us 24/7</p>
+                <p class="font-semibold text-white">589 (246) 2145 2142</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <div
+                class="flex items-center justify-center w-12 h-12"
+              >
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p class="text-gray-400 mb-0.5">Office Hours</p>
+                <p class="font-semibold text-white">Mon-Sat 8am - 6pm</p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-4 ml-2">
+              <button
+                @click="toggleSearch"
+                class="flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <span class="mdi mdi-magnify text-white"></span>
+              </button>
+
+              <button
+                @click="toggleCart"
+                class="flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <span class="mdi mdi-cart-outline text-white"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-if="isMobileMenuOpen"
+      class="lg:hidden bg-[#1a1a1a] border-t border-gray-800"
+    >
+      <div class="container mx-auto px-6 py-4 space-y-3">
+        <NuxtLink
+          to="/"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          HOME
+        </NuxtLink>
+        <NuxtLink
+          to="/about"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          ABOUT US
+        </NuxtLink>
+        <NuxtLink
+          to="/services"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          SERVICES
+        </NuxtLink>
+        <NuxtLink
+          to="/testimonial"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          TESTIMONIAL
+        </NuxtLink>
+        <NuxtLink
+          to="/blog"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          BLOG
+        </NuxtLink>
+        <NuxtLink
+          to="/contact"
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        >
+          CONTACT US
+        </NuxtLink>
+        <NuxtLink
+          to="/location"
+          class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors py-2"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          <span class="font-normal">OFFICE LOCATION</span>
+        </NuxtLink>
+      </div>
+    </div>
+  </header>
+</template>
+
+<script setup>
+const isMobileMenuOpen = ref(false);
+
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
+
+const toggleSearch = () => {
+  console.log("Search clicked");
+};
+
+const toggleCart = () => {
+  console.log("Cart clicked");
+};
+</script>
