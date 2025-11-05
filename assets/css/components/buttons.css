@@ -1,0 +1,48 @@
+/* Base button styles */
+.btn {
+  @apply px-4;
+  @apply py-2;
+  @apply font-bold;
+  @apply transition-colors;
+  @apply rounded-sm;
+}
+
+/* Black variant */
+.btn-primary {
+  @apply bg-black;
+  @apply text-white;
+  @apply hover:bg-gray-800;
+}
+
+/* White variant */
+.btn-secondary {
+  @apply bg-white;
+  @apply text-black;
+  @apply hover:bg-gray-100;
+}
+
+/* outlined variant */
+.btn-outlined {
+  @apply border;
+  @apply border-black;
+  @apply bg-transparent;
+  @apply hover:bg-gray-100;
+}
+
+.btn-deactivated {
+  @apply bg-gray-400;
+  @apply text-white;
+  @apply cursor-not-allowed;
+}
+
+.btn-sm {
+  @apply px-2; 
+  @apply py-1; 
+  @apply text-sm;
+}
+
+.btn-lg {
+  @apply px-6;
+  @apply py-3;
+  @apply text-lg;
+}
