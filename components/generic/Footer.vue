@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-[#1a1f2e] text-white">
-    <div class="container mx-auto px-32 py-16">
+    <div class="container mx-auto px-8 md:px-28 lg:px-32 py-16">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
           <h5 class="font-bold mb-6 relative inline-block">

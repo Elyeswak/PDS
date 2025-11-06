@@ -2,56 +2,60 @@
   <header class="bg-[#0a0a0a] text-white">
     <div class="relative">
       <nav class="relative z-10">
-        <div class="container mx-auto px-2">
-          <div class="flex items-center justify-center gap-x-52 h-14">
+        <div
+          class="container px-4 lg:mx-auto lg:px-28 sm:justify-center justify-end"
+        >
+          <div class="flex items-center h-14 mx-auto w-full">
             <div
-              class="hidden lg:flex items-center space-x-10 font-medium justify-center"
+              class="hidden lg:flex items-center justify-center space-x-6 xl:space-x-10 font-medium"
             >
               <NuxtLink
                 to="/"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 HOME +
               </NuxtLink>
               <NuxtLink
                 to="/about"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 ABOUT US
               </NuxtLink>
               <NuxtLink
                 to="/services"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 SERVICES
               </NuxtLink>
               <NuxtLink
                 to="/testimonial"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 TESTIMONIAL
               </NuxtLink>
               <NuxtLink
                 to="/blog"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 BLOG
               </NuxtLink>
               <NuxtLink
                 to="/contact"
-                class="text-white hover:text-gray-300 transition-colors text-base"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
                 CONTACT US
               </NuxtLink>
             </div>
 
-            <div class="hidden lg:flex items-end space-x-6">
+            <div
+              class="hidden lg:flex items-center space-x-4 xl:space-x-6 shrink-0 ml-auto"
+            >
               <NuxtLink
                 to="/location"
-                class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors"
+                class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors whitespace-nowrap"
               >
                 <svg
-                  class="w-3.5 h-3.5"
+                  class="w-3.5 h-3.5 shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -61,10 +65,11 @@
                     clip-rule="evenodd"
                   />
                 </svg>
-                <span class="font-normal tracking-wider">OFFICE LOCATION</span>
+                <span class="font-normal tracking-wider text-sm xl:text-base"
+                  >OFFICE LOCATION</span
+                >
               </NuxtLink>
             </div>
-
             <button @click="toggleMobileMenu" class="lg:hidden text-white">
               <svg
                 v-if="!isMobileMenuOpen"
@@ -98,25 +103,24 @@
           </div>
         </div>
       </nav>
-
       <div class="relative overflow-hidden bg-[#1a1a1a]">
         <div class="absolute inset-0">
           <div
-            class="absolute left-0 top-0 bottom-0 w-[35%] bg-[#ff4500]"
+            class="absolute left-0 top-0 bottom-0 w-[20%] md:w-[20%] xl:w-[25%] bg-[#ff4500]"
             style="clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%)"
           ></div>
         </div>
 
-        <div class="relative z-10 container mx-auto px-6">
+        <div class="relative z-10 container mx-auto px-4 lg:px-28">
           <div
-            class="flex flex-col md:flex-row items-center justify-start md:ml-[35%] py-4 space-y-2 md:space-y-0 md:space-x-12"
+            class="flex flex-col lg:flex-row ml-40 items-center justify-center py-4 space-y-2 md:space-y-0 md:space-x-6 lg:space-x-8 xl:space-x-12"
           >
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center space-x-2 shrink-0">
               <div
-                class="flex items-center justify-center w-12 h-12"
+                class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12"
               >
                 <svg
-                  class="w-6 h-6 text-white"
+                  class="w-5 h-5 lg:w-6 lg:h-6 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -130,17 +134,21 @@
                 </svg>
               </div>
               <div>
-                <p class="text-gray-400 mb-0.5">Make An Email</p>
-                <p class="font-semibold text-white">info@malen.com</p>
+                <p class="text-gray-400 mb-0.5 text-xs lg:text-sm">
+                  Make An Email
+                </p>
+                <p class="font-semibold text-white text-sm lg:text-base">
+                  info@malen.com
+                </p>
               </div>
             </div>
 
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 shrink-0">
               <div
-                class="flex items-center justify-center w-12 h-12"
+                class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12"
               >
                 <svg
-                  class="w-6 h-6 text-white"
+                  class="w-5 h-5 lg:w-6 lg:h-6 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -154,17 +162,23 @@
                 </svg>
               </div>
               <div>
-                <p class="text-gray-400 mb-0.5">Call Us 24/7</p>
-                <p class="font-semibold text-white">589 (246) 2145 2142</p>
+                <p class="text-gray-400 mb-0.5 text-xs lg:text-sm">
+                  Call Us 24/7
+                </p>
+                <p
+                  class="font-semibold text-white text-sm lg:text-base whitespace-nowrap"
+                >
+                  589 (246) 2145 2142
+                </p>
               </div>
             </div>
 
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 shrink-0">
               <div
-                class="flex items-center justify-center w-12 h-12"
+                class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12"
               >
                 <svg
-                  class="w-6 h-6 text-white"
+                  class="w-5 h-5 lg:w-6 lg:h-6 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -178,24 +192,36 @@
                 </svg>
               </div>
               <div>
-                <p class="text-gray-400 mb-0.5">Office Hours</p>
-                <p class="font-semibold text-white">Mon-Sat 8am - 6pm</p>
+                <p class="text-gray-400 mb-0.5 text-xs lg:text-sm">
+                  Office Hours
+                </p>
+                <p
+                  class="font-semibold text-white text-sm lg:text-base whitespace-nowrap"
+                >
+                  Mon-Sat 8am - 6pm
+                </p>
               </div>
             </div>
 
-            <div class="flex items-center space-x-4 ml-2">
+            <div
+              class="flex items-center space-x-3 lg:space-x-4 ml-14 shrink-0"
+            >
               <button
                 @click="toggleSearch"
-                class="flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                class="flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               >
-                <span class="mdi mdi-magnify text-white"></span>
+                <span
+                  class="mdi mdi-magnify text-white text-lg lg:text-xl"
+                ></span>
               </button>
 
               <button
                 @click="toggleCart"
-                class="flex items-center justify-center w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                class="flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
               >
-                <span class="mdi mdi-cart-outline text-white"></span>
+                <span
+                  class="mdi mdi-cart-outline text-white text-lg lg:text-xl"
+                ></span>
               </button>
             </div>
           </div>
