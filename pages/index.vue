@@ -11,5 +11,6 @@
 <GenericWhyUs />
 <GenericTestomanials />
 <HomeBlogSection/>
+<GenericContactSection />
 <GenericFooter />
 </template>
