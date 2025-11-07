@@ -8,5 +8,8 @@
 <GenericAboutUsSection />
 <GenericProducts/>
 <GenericPricing />
+<GenericWhyUs />
+<GenericTestomanials />
+<HomeBlogSection/>
 <GenericFooter />
 </template>
