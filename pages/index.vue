@@ -5,5 +5,8 @@
 <GenericAbout />
 <GenericCTA />
 <GenericExperts />
+<GenericAboutUsSection />
+<GenericProducts/>
+<GenericPricing />
 <GenericFooter />
 </template>
