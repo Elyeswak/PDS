@@ -1,52 +1,63 @@
 <template>
-  <section class="relative w-full bg-neutral-100 py-[114px]">
+  <section class="relative w-full bg-neutral-100 py-20">
     <div class="container mx-auto px-4">
-      <div class="flex flex-col items-center mb-[50px]">
+      
+      <!-- Header -->
+      <div class="flex flex-col items-center mb-12">
         <div class="flex items-center gap-4 mb-6">
           <div class="flex items-center gap-2">
-            <div class="w-5 h-0.5 bg-[#eb3300]" />
-            <div class="w-[30px] h-0.5 bg-[#eb3300]" />
+            <div class="w-5 h-[0.125rem] bg-[#eb3300]" />
+            <div class="w-[2rem] h-[0.125rem] bg-[#eb3300]" />
           </div>
-          <div class="font-bold text-[#eb3300] text-sm tracking-[0] leading-[14px] whitespace-nowrap">
+
+          <div class="font-bold text-[#eb3300] text-sm leading-4 whitespace-nowrap">
             OUR HAPPY CUSTOMERS
           </div>
+
           <div class="flex items-center gap-2">
-            <div class="w-[30px] h-0.5 bg-[#eb3300]" />
-            <div class="w-5 h-0.5 bg-[#eb3300]" />
+            <div class="w-[2rem] h-[0.125rem] bg-[#eb3300]" />
+            <div class="w-5 h-[0.125rem] bg-[#eb3300]" />
           </div>
         </div>
-        <h2 class="font-bold text-neutral-950 text-5xl text-center tracking-[0] leading-[58.9px] whitespace-nowrap">
+
+        <h2 class="font-bold text-neutral-950 text-5xl text-center leading-[3.7rem] whitespace-nowrap">
           What Customer Says
         </h2>
       </div>
-      <div class="flex justify-center gap-6 mb-[52px]">
+
+      <!-- Testimonials -->
+      <div class="flex sm:flex-row flex-col justify-center gap-6 mb-14">
         <div
           v-for="(testimonial, index) in visibleTestimonials"
           :key="index"
-          class="w-full max-w-[613px] bg-white shadow-[0px_11px_30px_#00000005]"
+          class="w-full max-w-[38.3rem] bg-white shadow-[0_0.7rem_1.9rem_#00000005]"
         >
-          <div class="p-[50px]">
-            <div class="flex gap-[17px] mb-[49px]">
-              <div class="w-[35px] h-[35px] flex-shrink-0 rounded-full bg-[#eb3300] flex items-center justify-center">
+          <div class="p-12">
+            <div class="flex gap-4 mb-12">
+              <div class="w-9 h-9 shrink-0 rounded-full bg-[#eb3300] flex items-center justify-center">
                 <span class="mdi mdi-format-quote-close text-white text-xl"></span>
               </div>
-              <div class="w-20 h-20 rounded-[40px] bg-gray-200 flex-shrink-0" />
+
+              <div class="w-20 h-20 rounded-[2.5rem] bg-gray-200 shrink-0" />
+
               <div class="flex flex-col justify-center flex-1">
-                <h3 class="font-bold text-neutral-950 text-2xl tracking-[0] leading-[30.7px] mb-0">
+                <h3 class="font-bold text-neutral-950 text-2xl leading-8">
                   {{ testimonial.name }}
                 </h3>
-                <p class="font-normal text-[#4b4b4b] text-base tracking-[0] leading-[26px]">
+                <p class="font-normal text-[#4b4b4b] text-base leading-6">
                   {{ testimonial.title }}
                 </p>
               </div>
             </div>
-            <p class="font-normal text-[#4b4b4b] text-lg tracking-[0] leading-[31.5px]">
+
+            <p class="font-normal text-[#4b4b4b] text-lg leading-8">
               {{ testimonial.quote }}
             </p>
           </div>
         </div>
       </div>
-      <div class="flex justify-center items-center gap-[25px]">
+
+      <div class="flex justify-center items-center gap-6">
         <button
           v-for="(dot, index) in paginationDots"
           :key="index"
@@ -56,13 +67,15 @@
         >
           <div
             v-if="dot.active"
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[30px] w-[30px] rounded-[15px] border-2 border-solid border-[#eb3300]"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[1.875rem] w-[1.875rem] rounded-full border-2 border-solid border-[#eb3300]"
           />
         </button>
       </div>
+
     </div>
   </section>
 </template>
+
 
 <script setup>
 import { ref, computed } from 'vue';

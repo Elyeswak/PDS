@@ -5,7 +5,7 @@
         <div class="flex flex-col">
           <div class="flex items-center gap-3 mb-6">
             <div class="w-[30px] h-0.5 bg-[#eb3300]" />
-            <span class="font-bold text-[#eb3300] text-sm tracking-[0] leading-[14px]">
+            <span class="font-bold text-[#eb3300] text-sm tracking-[0] leading-3.5">
               CONTACT US
             </span>
             <div class="w-5 h-0.5 bg-[#eb3300]" />
@@ -49,10 +49,10 @@
               <button
                 v-for="(social, index) in socialLinks"
                 :key="index"
-                class="w-[40px] h-[40px] lg:w-[45px] lg:h-[45px] flex items-center justify-center bg-[#f6f7f9] rounded-[22.5px] hover:bg-[#eb3300] hover:text-white transition-colors"
+                class="w-10 h-10 lg:w-[45px] lg:h-[45px] flex items-center justify-center bg-[#f6f7f9] rounded-[22.5px] hover:bg-[#eb3300] hover:text-white transition-colors"
                 :aria-label="social.label"
               >
-                <component :is="social.icon" class="w-[16px] h-[16px] lg:w-[18px] lg:h-[18px]" />
+                <component :is="social.icon" class="w-4 h-4 lg:w-[18px] lg:h-[18px]" />
               </button>
             </div>
           </div>
@@ -71,7 +71,7 @@
                   v-model="formData.name"
                   type="text"
                   placeholder="Name"
-                  class="w-full h-[50px] lg:h-[54px] bg-white border-0 pl-[40px] lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3"
+                  class="w-full h-[50px] lg:h-[54px] bg-white border-0 pl-10 lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3"
                 />
               </div>
               <div class="relative">
@@ -80,7 +80,7 @@
                   v-model="formData.email"
                   type="email"
                   placeholder="Email Address"
-                  class="w-full h-[50px] lg:h-[54px] bg-white border-0 pl-[40px] lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3"
+                  class="w-full h-[50px] lg:h-[54px] bg-white border-0 pl-10 lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3"
                 />
               </div>
             </div>
@@ -89,7 +89,7 @@
               <User class="absolute left-[18px] lg:left-[22px] top-1/2 -translate-y-1/2 w-3.5 h-4 text-[#4b4b4b] z-10" />
               <select
                 v-model="formData.selected"
-                class="w-full h-[50px] lg:h-14 bg-white border-0 pl-[40px] lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3 appearance-none"
+                class="w-full h-[50px] lg:h-14 bg-white border-0 pl-10 lg:pl-[45px] rounded font-normal text-[#4b4b4b] text-base px-3 appearance-none"
               >
                 <option value="" disabled>Select</option>
                 <option value="option1">Option 1</option>

@@ -10,7 +10,7 @@
 <GenericPricing />
 <GenericWhyUs />
 <GenericTestomanials />
-<HomeBlogSection/>
+<!-- <HomeBlogSection/> -->
 <GenericContactSection />
 <GenericFooter />
 </template>
