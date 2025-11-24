@@ -111,9 +111,9 @@
           ></div>
         </div>
 
-        <div class="relative z-10 container mx-auto px-4 lg:px-28">
+        <div class="relative z-10 container mx-auto px-4 lg:px-20">
           <div
-            class="flex flex-col lg:flex-row ml-40 items-center justify-center py-4 space-y-2 md:space-y-0 md:space-x-6 lg:space-x-8 xl:space-x-12"
+            class="flex flex-col lg:flex-row ml-40 justify-start items-start lg:items-center lg:justify-center py-4 space-y-4 lg:space-y-0 md:space-x-6 lg:space-x-8 xl:space-x-12"
           >
             <div class="flex items-center space-x-2 shrink-0">
               <div
