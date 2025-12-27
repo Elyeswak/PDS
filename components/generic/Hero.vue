@@ -1,61 +1,45 @@
 <template>
   <section
-    class="relative h-screen flex items-center overflow-hidden"
-    style="min-height: 600px"
+    class="relative h-screen flex items-center overflow-hidden min-h-150"
   >
+    <!-- Background -->
     <div
       class="absolute inset-0 bg-cover bg-center bg-no-repeat"
       :style="{ backgroundImage: `url(${bgImage})` }"
     >
       <div class="absolute inset-0 bg-black/30"></div>
     </div>
+
+    <!-- Content -->
     <div class="relative z-10 container mx-auto px-14">
       <div class="flex items-center justify-between max-w-6xl mx-auto">
+        <!-- LEFT TEXT -->
         <div class="max-w-2xl">
           <p class="text-white mb-4 tracking-wider uppercase text-sm">
-            AMAZING CAR SERVICING CENTER
+            {{ slides[currentSlide].tag }}
           </p>
           <h1 class="text-white font-bold leading-tight mb-6 text-5xl">
-            Fix Your Personal<br />Car Problem
+            {{ slides[currentSlide].title }}
           </h1>
           <p class="text-white/90 mb-8 max-w-lg">
-            Take payments online with a scalable platform that grows with your
-            perfect business.
+            {{ slides[currentSlide].description }}
           </p>
         </div>
+
+        <!-- SLIDE BUTTONS -->
         <div class="flex flex-col space-y-4 ml-8">
           <button
-            @click="goToSlide(0)"
+            v-for="(slide, index) in slides"
+            :key="index"
+            @click="goToSlide(index)"
             :class="[
               'w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all hover:cursor-pointer font-semibold',
-              currentSlide === 0
+              currentSlide === index
                 ? 'bg-[#ff4500] border-[#ff4500] text-white'
                 : 'bg-white/20 border-white/40 text-white hover:bg-white/30',
             ]"
           >
-            1
-          </button>
-          <button
-            @click="goToSlide(1)"
-            :class="[
-              'w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all hover:cursor-pointer font-semibold',
-              currentSlide === 1
-                ? 'bg-[#ff4500] border-[#ff4500] text-white'
-                : 'bg-white/20 border-white/40 text-white hover:bg-white/30',
-            ]"
-          >
-            2
-          </button>
-          <button
-            @click="goToSlide(2)"
-            :class="[
-              'w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all hover:cursor-pointer font-semibold',
-              currentSlide === 2
-                ? 'bg-[#ff4500] border-[#ff4500] text-white'
-                : 'bg-white/20 border-white/40 text-white hover:bg-white/30',
-            ]"
-          >
-            3
+            {{ index + 1 }}
           </button>
         </div>
       </div>
@@ -64,6 +48,8 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   bgImage: {
     type: String,
@@ -71,10 +57,30 @@ const props = defineProps({
   },
 });
 
+const slides = [
+  {
+    tag: "AMAZING CAR SERVICING CENTER",
+    title: "Fix Your Personal\nCar Problem",
+    description:
+      "Take payments online with a scalable platform that grows with your perfect business.",
+  },
+  {
+    tag: "FAST & RELIABLE CAR MAINTENANCE",
+    title: "Professional Auto\nRepair Services",
+    description:
+      "Our specialists diagnose and solve issues quickly using modern technology and tools.",
+  },
+  {
+    tag: "PREMIUM SUPPORT FOR ALL VEHICLES",
+    title: "Keep Your Car\nRunning Smoothly",
+    description:
+      "We ensure every part of your vehicle works perfectly for safe and enjoyable driving.",
+  },
+];
+
 const currentSlide = ref(0);
 
 const goToSlide = (index) => {
   currentSlide.value = index;
-  console.log("Go to slide:", index);
 };
 </script>
