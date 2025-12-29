@@ -1,7 +1,4 @@
-// ============================================================================
-// FILE: server/api/webhooks/cal.post.ts
-// FIXED: Cal.com API authentication now uses query parameter instead of Bearer
-// ============================================================================
+// server/api/webhooks/cal.post.ts
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
 import { sendAdminNotification, sendUserConfirmation, sendCancellationEmail } from '../../utils/email';
@@ -14,164 +11,268 @@ export default defineEventHandler(async (event) => {
     const signature = getHeader(event, 'x-cal-signature');
     
     if (!body) {
-      throw createError({
-        statusCode: 400,
-        message: 'Missing request body'
-      });
+      throw createError({ statusCode: 400, message: 'Missing request body' });
     }
 
     console.log('=== CAL.COM WEBHOOK RECEIVED ===');
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Signature present:', !!signature);
-
     const config = useRuntimeConfig();
     const webhookSecret = config.calComWebhookSecret;
     
-    // Only verify signature if both signature and secret are present
+    // Verify signature
     if (signature && webhookSecret && webhookSecret !== '4Jjj8bF3KJONnMfvCEy8Pa2pJ2gqCV7C') {
       if (!verifySignature(body, signature, webhookSecret)) {
-        console.error('❌ Signature verification failed');
-        throw createError({
-          statusCode: 401,
-          message: 'Invalid webhook signature'
-        });
+        throw createError({ statusCode: 401, message: 'Invalid webhook signature' });
       }
-      console.log('✅ Signature verified');
-    } else {
-      console.warn('⚠️ Skipping signature verification (event-type webhook or test secret)');
     }
 
     const rawPayload = JSON.parse(body);
-    console.log('📦 Raw payload received:', JSON.stringify(rawPayload, null, 2));
-
-    // Normalize the payload
-    const normalizedPayload = normalizeCalComPayload(rawPayload);
-    console.log('🔄 Normalized payload:', JSON.stringify(normalizedPayload, null, 2));
-
-    // Detect event type
-    const eventType = detectEventType(normalizedPayload, rawPayload);
+    console.log('📦 Raw payload:', JSON.stringify(rawPayload, null, 2));
+    
+    const normalized = normalizeCalComPayload(rawPayload);
+    console.log('📄 Normalized payload:', JSON.stringify(normalized, null, 2));
+    
+    // CRITICAL: Detect TRUE event type based on Cal.com webhook behavior
+    const eventType = detectEventType(normalized, rawPayload);
     console.log(`📋 Detected event type: ${eventType}`);
 
-    // Log webhook to database
+    // Log webhook
     await prisma.webhookLog.create({
       data: {
-        eventType: eventType,
+        eventType,
         payload: rawPayload,
         success: true
       }
     });
 
-    // Route to appropriate handler
+    // Route to handlers
     switch (eventType) {
+      case 'REQUIRES_API_CHECK':
+        // Minimal payload - must check Cal.com API to determine actual event
+        await handleMinimalPayload(normalized, config);
+        break;
       case 'BOOKING_CREATED':
-        await handleBookingCreated(normalizedPayload, config);
+        await handleBookingCreated(normalized, config);
         break;
-      
       case 'BOOKING_RESCHEDULED':
-        await handleBookingRescheduled(normalizedPayload, config);
+        await handleBookingRescheduled(normalized, config);
         break;
-      
       case 'BOOKING_CANCELLED':
-        await handleBookingCancelled(normalizedPayload);
+        await handleBookingCancelled(normalized);
         break;
-      
       default:
-        console.log(`⚠️ Unhandled event type: ${eventType}`);
+        console.log(`⚠️ Unhandled event: ${eventType}`);
     }
 
-    return {
-      success: true,
-      message: 'Webhook processed successfully',
-      eventType
-    };
+    return { success: true, eventType };
 
   } catch (error: any) {
-    console.error('❌ WEBHOOK PROCESSING ERROR ===');
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-
+    console.error('❌ WEBHOOK ERROR:', error.message);
+    
     try {
       const body = await readRawBody(event);
       if (body) {
-        const rawPayload = JSON.parse(body);
-        const eventType = detectEventType(rawPayload, rawPayload);
-        
+        const raw = JSON.parse(body);
         await prisma.webhookLog.create({
           data: {
-            eventType: eventType,
-            payload: rawPayload,
+            eventType: detectEventType(raw, raw),
+            payload: raw,
             success: false,
             errorMessage: error.message
           }
         });
-        console.log('📝 Failed webhook logged to database');
       }
-    } catch (logError) {
-      console.error('❌ Failed to log webhook error:', logError);
-    }
+    } catch {}
 
-    throw createError({
-      statusCode: 500,
-      message: error.message || 'Webhook processing failed'
-    });
+    throw createError({ statusCode: 500, message: error.message });
   }
 });
 
+/**
+ * Handles minimal payload from event-type webhooks
+ * These webhooks send the same minimal data for ALL events
+ * Must fetch from Cal.com API to determine actual status
+ */
+async function handleMinimalPayload(payload: any, config: any) {
+  console.log('=== HANDLING MINIMAL PAYLOAD (REQUIRES API CHECK) ===');
+  
+  const uid = payload.uid;
+  if (!uid) throw new Error('Missing uid');
+
+  console.log('🌐 Fetching complete booking data from Cal.com API...');
+  
+  try {
+    const bookingData = await fetchCalComBooking(uid, config);
+    console.log('📊 API Response:', {
+      uid: bookingData.uid,
+      status: bookingData.status,
+      title: bookingData.title,
+      startTime: bookingData.startTime,
+      endTime: bookingData.endTime
+    });
+
+    const apiStatus = (bookingData.status || '').toUpperCase();
+    
+    // Check if booking exists in database
+    const existing = await prisma.appointment.findUnique({
+      where: { calComUid: uid }
+    });
+
+    // CANCELLATION
+    if (apiStatus === 'CANCELLED' || apiStatus === 'REJECTED') {
+      console.log('🚫 API shows CANCELLED status');
+      
+      if (!existing) {
+        console.log('⚠️ Cancelled booking not in database - skipping');
+        return;
+      }
+
+      if (existing.status === 'CANCELLED') {
+        console.log('✅ Already cancelled in database');
+        return;
+      }
+
+      console.log('📝 Updating booking to CANCELLED');
+      await prisma.appointment.update({
+        where: { calComUid: uid },
+        data: {
+          status: 'CANCELLED',
+          cancellationReason: bookingData.cancellationReason || 'Cancelled by user'
+        }
+      });
+
+      const updated = await prisma.appointment.findUnique({
+        where: { calComUid: uid }
+      });
+
+      if (updated) {
+        try {
+          await Promise.all([
+            sendCancellationEmail(updated),
+            sendAdminNotification(updated, 'CANCELLED')
+          ]);
+          console.log('📧 Cancellation emails sent');
+        } catch (err: any) {
+          console.error('⚠️ Email error:', err.message);
+        }
+      }
+
+      return;
+    }
+
+    // RESCHEDULE (has rescheduleUid in API response)
+    if (bookingData.rescheduleUid) {
+      console.log('🔄 API shows this is a reschedule');
+      
+      if (existing) {
+        console.log('⚠️ Rescheduled booking already exists - skipping');
+        return;
+      }
+
+      // Delegate to reschedule handler
+      await handleBookingRescheduled({
+        ...bookingData,
+        uid: uid,
+        rescheduleUid: bookingData.rescheduleUid
+      }, config);
+      
+      return;
+    }
+
+    // NEW BOOKING
+    if (!existing && (apiStatus === 'ACCEPTED' || apiStatus === 'PENDING')) {
+      console.log('📝 API shows new booking');
+      await handleBookingCreated(bookingData, config);
+      return;
+    }
+
+    console.log('ℹ️ No action needed - booking already processed');
+
+  } catch (error: any) {
+    console.error('❌ Failed to fetch from API:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * CRITICAL: Cal.com webhook behavior depends on configuration:
+ * - User/Team webhooks: Include triggerEvent field
+ * - Event-type webhooks: May have minimal payload without triggerEvent
+ * 
+ * Detection strategy:
+ * 1. Check triggerEvent field (most reliable)
+ * 2. Compare with Cal.com API to detect status changes
+ * 3. Infer from payload structure
+ */
 function detectEventType(normalized: any, raw: any): string {
+  console.log('🔍 Detecting event type...');
+  console.log('   triggerEvent:', raw.triggerEvent);
+  console.log('   type:', raw.type);
+  console.log('   status:', normalized.status || raw.status);
+  console.log('   rescheduleUid:', normalized.rescheduleUid || raw.rescheduleUid);
+  console.log('   payload keys:', Object.keys(raw).join(', '));
+  
+  // 1. Check explicit triggerEvent field (most reliable)
   if (raw.triggerEvent) {
-    return raw.triggerEvent.toUpperCase().replace('.', '_');
+    const trigger = raw.triggerEvent.toUpperCase();
+    console.log(`✅ Using triggerEvent: ${trigger}`);
+    
+    if (trigger.includes('CANCEL')) return 'BOOKING_CANCELLED';
+    if (trigger.includes('RESCHEDUL')) return 'BOOKING_RESCHEDULED';
+    if (trigger.includes('CREATED')) return 'BOOKING_CREATED';
+    
+    return trigger.replace('.', '_');
   }
+
+  // 2. Check status field (Cal.com sends status in payload)
+  const status = (normalized.status || raw.status || '').toUpperCase();
+  console.log(`   Checking status: ${status}`);
   
-  if (raw.type) {
-    return raw.type.toUpperCase().replace('.', '_');
-  }
-  
-  console.log('🔍 No explicit event type, inferring from payload structure...');
-  
-  if (normalized.rescheduleUid || raw.rescheduleUid || raw.oldBookingUid) {
-    console.log('✅ Detected reschedule indicators');
-    return 'BOOKING_RESCHEDULED';
-  }
-  
-  if (normalized.cancellationReason || raw.cancellationReason || 
-      raw.cancelReason || normalized.status === 'CANCELLED') {
-    console.log('✅ Detected cancellation indicators');
+  if (status === 'CANCELLED' || status === 'REJECTED') {
+    console.log('✅ Status indicates CANCELLATION');
     return 'BOOKING_CANCELLED';
   }
+
+  // 3. Check for reschedule indicators
+  if (normalized.rescheduleUid || raw.rescheduleUid || raw.oldBookingUid) {
+    console.log('✅ Reschedule UID found');
+    return 'BOOKING_RESCHEDULED';
+  }
+
+  // 4. Check cancellationReason (some cancellations include this)
+  if (normalized.cancellationReason || raw.cancellationReason || raw.cancelReason) {
+    console.log('✅ Cancellation reason found');
+    return 'BOOKING_CANCELLED';
+  }
+
+  // 5. FALLBACK: If no triggerEvent and minimal payload, always verify with API
+  // Event-type webhooks send same minimal payload for ALL events (created, cancelled, rescheduled)
+  const hasMinimalPayload = Object.keys(raw).length < 10 && !raw.startTime && !raw.endTime;
   
-  const hasUid = !!(normalized.uid || raw.uid);
-  const hasAttendees = !!(
-    normalized.attendees?.length > 0 || 
-    raw['attendees.0.email'] || 
-    raw.attendeeEmail
-  );
-  
-  if (hasUid && hasAttendees) {
-    console.log('✅ Detected new booking indicators (uid + attendees)');
-    return 'BOOKING_CREATED';
+  if (hasMinimalPayload && hasUid) {
+    console.log('⚠️ Minimal payload detected - requires API verification');
+    return 'REQUIRES_API_CHECK';
   }
   
-  console.warn('⚠️ Could not detect event type from payload structure');
+  if (hasUid && hasAttendees) {
+    console.log('✅ Has UID + attendees - treating as new booking');
+    return 'BOOKING_CREATED';
+  }
+
+  console.warn('⚠️ Could not determine event type');
   return 'UNKNOWN';
 }
 
 function normalizeCalComPayload(payload: any): any {
-  console.log('🔧 Starting payload normalization...');
-  
   if (payload.payload && typeof payload.payload === 'object') {
-    console.log('📦 Unwrapping nested payload object');
     payload = payload.payload;
   }
 
-  const keys = Object.keys(payload);
-  const hasFlattened = keys.some(key => key.includes('.') && /\.\d+\./.test(key));
+  const hasFlattened = Object.keys(payload).some(k => 
+    k.includes('.') && /\.\d+\./.test(k)
+  );
   
-  if (!hasFlattened) {
-    console.log('✅ Payload already normalized (no flattened keys)');
-    return payload;
-  }
+  if (!hasFlattened) return payload;
 
-  console.log('🔨 Unflattening dot-notation keys...');
   const normalized: any = {};
   
   for (const [key, value] of Object.entries(payload)) {
@@ -188,326 +289,296 @@ function normalizeCalComPayload(payload: any): any {
       const nextPart = parts[i + 1];
       
       if (!isNaN(Number(nextPart))) {
-        if (!current[part]) {
-          current[part] = [];
-        }
-        const index = Number(nextPart);
-        if (!current[part][index]) {
-          current[part][index] = {};
-        }
-        current = current[part][index];
+        if (!current[part]) current[part] = [];
+        const idx = Number(nextPart);
+        if (!current[part][idx]) current[part][idx] = {};
+        current = current[part][idx];
         i++;
       } else {
-        if (!current[part]) {
-          current[part] = {};
-        }
+        if (!current[part]) current[part] = {};
         current = current[part];
       }
     }
     
-    const finalKey = parts[parts.length - 1];
-    current[finalKey] = value;
+    current[parts[parts.length - 1]] = value;
   }
 
-  console.log('✅ Payload unflattened successfully');
   return normalized;
 }
 
 function verifySignature(body: string, signature: string, secret: string): boolean {
-  if (!signature || !secret) {
-    return false;
-  }
-  
   try {
     const hmac = crypto.createHmac('sha256', secret);
     hmac.update(body);
     const digest = hmac.digest('hex');
-    
-    if (signature.length !== digest.length) {
-      return false;
-    }
-    
     return crypto.timingSafeEqual(
       Buffer.from(signature, 'hex'), 
       Buffer.from(digest, 'hex')
     );
-  } catch (error: any) {
-    console.error('Signature verification error:', error.message);
+  } catch {
     return false;
   }
 }
 
-/**
- * Fetches full booking details from Cal.com API
- * 
- * IMPORTANT: Cal.com API v1 uses apiKey as query parameter, NOT Authorization header
- */
 async function fetchCalComBooking(uid: string, config: any): Promise<any> {
-  console.log(`🔍 Fetching full booking details for UID: ${uid}`);
-  
-  const calComApiKey = config.calComApiKey;
-  console.log('Using Cal.com API Key:', calComApiKey ? '✅ Present' : '❌ Missing');
-  
-  if (!calComApiKey) {
-    console.error('❌ CAL_COM_API_KEY not configured in environment variables');
-    throw new Error('Cal.com API key not configured. Please add CAL_COM_API_KEY to your .env file');
+  const apiKey = config.calComApiKey;
+  if (!apiKey) {
+    throw new Error('CAL_COM_API_KEY not configured');
   }
 
-  try {
-    // Cal.com API v1 authentication uses apiKey as query parameter
-    const apiUrl = `https://api.cal.com/v1/bookings?apiKey=${calComApiKey}&uid=${uid}`;
-    
-    console.log('🌐 Calling Cal.com API...');
-    // Don't log full API key for security
-    console.log('API URL:', apiUrl.replace(calComApiKey, 'REDACTED'));
-    
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+  const url = `https://api.cal.com/v1/bookings?apiKey=${apiKey}&uid=${uid}`;
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' }
+  });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`❌ Cal.com API error (${response.status}):`, errorText);
-      throw new Error(`Cal.com API returned ${response.status}: ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log('✅ Raw API Response received');
-    console.log('📊 API Response structure:', Object.keys(data).join(', '));
-    
-    // Cal.com API v1 returns bookings as an array
-    if (data.bookings && Array.isArray(data.bookings)) {
-      console.log(`📊 Found ${data.bookings.length} booking(s) in response`);
-      
-      // Find the booking with matching UID
-      const booking = data.bookings.find((b: any) => b.uid === uid);
-      
-      if (!booking) {
-        console.error(`❌ Booking with UID ${uid} not found in API response`);
-        console.log('Available UIDs:', data.bookings.map((b: any) => b.uid).join(', '));
-        throw new Error(`Booking with UID ${uid} not found in API response`);
-      }
-      
-      console.log('✅ Found matching booking');
-      console.log('📊 Booking data:', JSON.stringify(booking, null, 2));
-      return booking;
-    }
-    
-    // Fallback: if single booking object is returned
-    if (data.booking) {
-      console.log('📊 Single booking object returned');
-      console.log('📊 Booking data:', JSON.stringify(data.booking, null, 2));
-      return data.booking;
-    }
-    
-    // If data itself is the booking (direct object response)
-    if (data.uid === uid) {
-      console.log('📊 Direct booking object');
-      console.log('📊 Booking data:', JSON.stringify(data, null, 2));
-      return data;
-    }
-    
-    // Unexpected response format
-    console.error('❌ Unexpected API response structure');
-    console.error('Response data:', JSON.stringify(data, null, 2));
-    throw new Error('Unexpected API response structure - booking data not found');
-    
-  } catch (error: any) {
-    console.error('❌ Failed to fetch booking from Cal.com:', error.message);
-    if (error.stack) {
-      console.error('Error stack:', error.stack);
-    }
-    throw error;
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Cal.com API error ${res.status}: ${errorText}`);
   }
+
+  const data = await res.json();
+  
+  if (data.bookings?.length > 0) {
+    const booking = data.bookings.find((b: any) => b.uid === uid);
+    if (!booking) throw new Error(`Booking ${uid} not found in response`);
+    return booking;
+  }
+  
+  if (data.booking) return data.booking;
+  if (data.uid === uid) return data;
+  
+  throw new Error('Unexpected API response structure');
 }
 
 /**
- * Handles new booking creation
+ * CRITICAL: This handles BOTH new bookings AND status updates
+ * Cal.com sends BOOKING_CREATED event for cancellations too
  */
 async function handleBookingCreated(payload: any, config: any) {
   console.log('=== HANDLING BOOKING_CREATED ===');
-  console.log('Available payload keys:', Object.keys(payload).join(', '));
-
+  
   const uid = payload.uid;
-  
-  if (!uid) {
-    throw new Error('Missing required field: uid');
-  }
+  if (!uid) throw new Error('Missing uid');
 
-  // Check if we have complete data in the webhook
-  const hasCompleteData = payload.startTime && payload.endTime;
-  
-  let bookingData = payload;
-  
-  if (!hasCompleteData) {
-    console.warn('⚠️ Webhook payload missing critical fields (startTime/endTime)');
-    console.log('🌐 Fetching complete booking details from Cal.com API...');
+  // Check if booking already exists
+  const existing = await prisma.appointment.findUnique({
+    where: { calComUid: uid }
+  });
+
+  if (existing) {
+    console.log(`⚠️ Booking ${uid} already exists (ID: ${existing.id})`);
+    console.log(`   Current DB status: ${existing.status}`);
+    console.log(`   Payload status: ${payload.status}`);
     
-    try {
-      bookingData = await fetchCalComBooking(uid, config);
-    } catch (apiError: any) {
-      console.error('❌ Failed to fetch booking details:', apiError.message);
-      throw new Error(`Cannot process booking: webhook data incomplete and API fetch failed - ${apiError.message}`);
-    }
-  }
-
-  console.log('📊 Processing booking data:', {
-    uid: bookingData.uid,
-    id: bookingData.id,
-    title: bookingData.title,
-    startTime: bookingData.startTime,
-    endTime: bookingData.endTime
-  });
-
-  // Extract booking data with multiple fallbacks
-  const id = bookingData.id || bookingData.bookingId || 0;
-  const title = bookingData.title || bookingData.eventType?.title || 'Appointment';
-  const description = bookingData.description || bookingData.notes || '';
-  const startTime = bookingData.startTime || bookingData.start || bookingData.startDate;
-  const endTime = bookingData.endTime || bookingData.end || bookingData.endDate;
-  
-  // Handle attendees
-  const attendees = bookingData.attendees || payload.attendees || [];
-  const attendee = attendees[0];
-  
-  console.log('📊 Extracted booking data:', {
-    uid,
-    bookingId: id,
-    title,
-    hasAttendee: !!attendee,
-    attendeeName: attendee?.name,
-    attendeeEmail: attendee?.email,
-    startTime,
-    endTime
-  });
-  
-  // Validate required fields
-  if (!attendee || !attendee.email) {
-    throw new Error('Missing required field: attendee email');
-  }
-  
-  if (!startTime || !endTime) {
-    throw new Error('Missing required fields: startTime or endTime even after API fetch');
-  }
-
-  // Extract custom fields
-  const responses = bookingData.responses || bookingData.customInputs || {};
-  const companyName = responses.companyName || bookingData.companyName || null;
-  const serviceInterest = responses.serviceInterest || bookingData.serviceInterest || null;
-  const specialRequirements = responses.specialRequirements || bookingData.specialRequirements || null;
-
-  // Extract meeting URL
-  const metadata = bookingData.metadata || {};
-  const meetingUrl = 
-    metadata.videoCallUrl || 
-    bookingData.meetingUrl || 
-    bookingData.location || 
-    bookingData.conferenceData?.url || 
-    null;
-
-  console.log('💾 Creating appointment in database...');
-
-  try {
-    const appointment = await prisma.appointment.create({
-      data: {
-        calComBookingId: id,
-        calComUid: uid,
-        attendeeName: attendee.name || 'Unknown',
-        attendeeEmail: attendee.email,
-        attendeeTimezone: attendee.timeZone || attendee.timezone || 'UTC',
-        title,
-        description,
-        startTime: new Date(startTime),
-        endTime: new Date(endTime),
-        status: 'CONFIRMED',
-        companyName,
-        serviceInterest,
-        specialRequirements,
-        meetingUrl
+    // CRITICAL: Check if this is a status update (especially cancellation)
+    const payloadStatus = (payload.status || '').toUpperCase();
+    
+    if (payloadStatus === 'CANCELLED' || payloadStatus === 'REJECTED') {
+      console.log('🚫 Payload indicates CANCELLATION - updating existing booking');
+      
+      await prisma.appointment.update({
+        where: { calComUid: uid },
+        data: {
+          status: 'CANCELLED',
+          cancellationReason: payload.cancellationReason || payload.cancelReason || 'Cancelled by user'
+        }
+      });
+      
+      console.log(`✅ Updated appointment ${existing.id} to CANCELLED`);
+      
+      // Send cancellation emails
+      const updated = await prisma.appointment.findUnique({
+        where: { calComUid: uid }
+      });
+      
+      if (updated) {
+        try {
+          await Promise.all([
+            sendCancellationEmail(updated),
+            sendAdminNotification(updated, 'CANCELLED')
+          ]);
+          console.log('📧 Cancellation emails sent');
+        } catch (err: any) {
+          console.error('⚠️ Email error:', err.message);
+        }
       }
-    });
-
-    console.log(`✅ Appointment created successfully!`);
-    console.log(`   Database ID: ${appointment.id}`);
-    console.log(`   Cal.com UID: ${appointment.calComUid}`);
-    console.log(`   Attendee: ${appointment.attendeeName} (${appointment.attendeeEmail})`);
-    console.log(`   Time: ${appointment.startTime.toISOString()}`);
-
-    // Send notification emails
-    console.log('📧 Sending notification emails...');
-    try {
-      await Promise.all([
-        sendUserConfirmation(appointment),
-        sendAdminNotification(appointment, 'NEW_BOOKING')
-      ]);
-      console.log('✅ Notification emails sent successfully');
-    } catch (emailError: any) {
-      console.error('⚠️ Failed to send notification emails:', emailError.message);
+      
+      return;
     }
     
-  } catch (dbError: any) {
-    console.error('❌ Database error:', dbError.message);
-    throw dbError;
+    // Not a cancellation - check current status from Cal.com API
+    try {
+      const current = await fetchCalComBooking(uid, config);
+      console.log(`   Cal.com API status: ${current.status}`);
+      
+      if (current.status === 'CANCELLED' || current.status === 'REJECTED') {
+        console.log('🚫 Cal.com API shows CANCELLED - updating database');
+        
+        await prisma.appointment.update({
+          where: { calComUid: uid },
+          data: {
+            status: 'CANCELLED',
+            cancellationReason: current.cancellationReason || 'Cancelled'
+          }
+        });
+        
+        const updated = await prisma.appointment.findUnique({
+          where: { calComUid: uid }
+        });
+        
+        if (updated) {
+          try {
+            await Promise.all([
+              sendCancellationEmail(updated),
+              sendAdminNotification(updated, 'CANCELLED')
+            ]);
+          } catch (err: any) {
+            console.error('⚠️ Email error:', err.message);
+          }
+        }
+        
+        return;
+      }
+      
+      console.log(`ℹ️ Status is ${current.status} - no update needed`);
+      return;
+      
+    } catch (err: any) {
+      console.error('⚠️ Could not fetch from API:', err.message);
+      console.log('ℹ️ Skipping duplicate - assuming no status change');
+      return;
+    }
   }
-}
 
-/**
- * Handles booking reschedule
- */
-async function handleBookingRescheduled(payload: any, config: any) {
-  console.log('=== HANDLING BOOKING_RESCHEDULED ===');
+  // NEW BOOKING - Create it
+  console.log('📝 Creating new booking...');
   
-  const uid = payload.uid;
-  const rescheduleUid = payload.rescheduleUid || payload.oldBookingUid;
-
-  if (!rescheduleUid || !uid) {
-    throw new Error('Missing required fields for reschedule');
-  }
-
-  // Fetch full booking details if needed
+  // Fetch complete data if needed
   let bookingData = payload;
   if (!payload.startTime || !payload.endTime) {
-    console.log('🌐 Fetching complete booking details from Cal.com API...');
+    console.log('🌐 Fetching complete booking data from API...');
     bookingData = await fetchCalComBooking(uid, config);
   }
 
-  const id = bookingData.id || 0;
-  const startTime = bookingData.startTime || bookingData.start;
-  const endTime = bookingData.endTime || bookingData.end;
-
-  const oldBooking = await prisma.appointment.findUnique({
-    where: { calComUid: rescheduleUid }
-  });
-
-  if (!oldBooking) {
-    throw new Error(`Original booking not found: ${rescheduleUid}`);
+  // Check status one more time before creating
+  const bookingStatus = (bookingData.status || '').toUpperCase();
+  if (bookingStatus === 'CANCELLED' || bookingStatus === 'REJECTED') {
+    console.log('⚠️ Booking is cancelled in Cal.com - not creating');
+    return;
   }
 
-  await prisma.appointment.update({
-    where: { calComUid: rescheduleUid },
+  // Extract data
+  const attendees = bookingData.attendees || [];
+  const attendee = attendees[0];
+  
+  if (!attendee?.email) throw new Error('Missing attendee email');
+  if (!bookingData.startTime || !bookingData.endTime) {
+    throw new Error('Missing time fields');
+  }
+
+  const responses = bookingData.responses || bookingData.customInputs || {};
+  
+  // Create appointment
+  const appointment = await prisma.appointment.create({
     data: {
-      status: 'RESCHEDULED',
-      rescheduleUid: uid
+      calComBookingId: bookingData.id || 0,
+      calComUid: uid,
+      attendeeName: attendee.name || 'Unknown',
+      attendeeEmail: attendee.email,
+      attendeeTimezone: attendee.timeZone || attendee.timezone || 'UTC',
+      title: bookingData.title || 'Appointment',
+      description: bookingData.description || '',
+      startTime: new Date(bookingData.startTime),
+      endTime: new Date(bookingData.endTime),
+      status: 'CONFIRMED',
+      companyName: responses.companyName || null,
+      serviceInterest: responses.serviceInterest || null,
+      specialRequirements: responses.specialRequirements || null,
+      meetingUrl: bookingData.meetingUrl || bookingData.location || null
     }
   });
 
+  console.log(`✅ Created appointment ${appointment.id}`);
+
+  try {
+    await Promise.all([
+      sendUserConfirmation(appointment),
+      sendAdminNotification(appointment, 'NEW_BOOKING')
+    ]);
+    console.log('📧 Confirmation emails sent');
+  } catch (err: any) {
+    console.error('⚠️ Email error:', err.message);
+  }
+}
+
+async function handleBookingRescheduled(payload: any, config: any) {
+  console.log('=== HANDLING BOOKING_RESCHEDULED ===');
+  
+  const newUid = payload.uid;
+  const oldUid = payload.rescheduleUid || payload.oldBookingUid;
+
+  if (!newUid || !oldUid) {
+    throw new Error('Missing uid fields for reschedule');
+  }
+
+  // Check if new booking already exists
+  const existingNew = await prisma.appointment.findUnique({
+    where: { calComUid: newUid }
+  });
+
+  if (existingNew) {
+    console.log(`⚠️ New booking ${newUid} already exists - skipping`);
+    return;
+  }
+
+  // Fetch complete data
+  let bookingData = payload;
+  if (!payload.startTime || !payload.endTime) {
+    bookingData = await fetchCalComBooking(newUid, config);
+  }
+
+  // Find old booking
+  const oldBooking = await prisma.appointment.findUnique({
+    where: { calComUid: oldUid }
+  });
+
+  if (!oldBooking) {
+    console.error(`❌ Old booking ${oldUid} not found`);
+    throw new Error(`Cannot reschedule: old booking not found`);
+  }
+
+  // Check if already rescheduled
+  if (oldBooking.status === 'RESCHEDULED' && oldBooking.rescheduleUid === newUid) {
+    console.log('⚠️ Already rescheduled - skipping');
+    return;
+  }
+
+  // Update old booking
+  await prisma.appointment.update({
+    where: { calComUid: oldUid },
+    data: {
+      status: 'RESCHEDULED',
+      rescheduleUid: newUid
+    }
+  });
+
+  console.log(`✅ Marked old booking ${oldBooking.id} as RESCHEDULED`);
+
+  // Create new booking
   const attendees = bookingData.attendees || [];
   const attendee = attendees[0];
 
   const newAppointment = await prisma.appointment.create({
     data: {
-      calComBookingId: id,
-      calComUid: uid,
+      calComBookingId: bookingData.id || 0,
+      calComUid: newUid,
       attendeeName: attendee?.name || oldBooking.attendeeName,
       attendeeEmail: attendee?.email || oldBooking.attendeeEmail,
       attendeeTimezone: attendee?.timeZone || oldBooking.attendeeTimezone,
       title: bookingData.title || oldBooking.title,
       description: bookingData.description || oldBooking.description,
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
+      startTime: new Date(bookingData.startTime),
+      endTime: new Date(bookingData.endTime),
       status: 'CONFIRMED',
       companyName: oldBooking.companyName,
       serviceInterest: oldBooking.serviceInterest,
@@ -516,60 +587,85 @@ async function handleBookingRescheduled(payload: any, config: any) {
     }
   });
 
-  console.log(`✅ Appointment rescheduled: ${newAppointment.id}`);
+  console.log(`✅ Created new booking ${newAppointment.id}`);
 
   try {
     await Promise.all([
       sendUserConfirmation(newAppointment),
       sendAdminNotification(newAppointment, 'RESCHEDULED')
     ]);
-  } catch (emailError: any) {
-    console.error('⚠️ Failed to send emails:', emailError.message);
+    console.log('📧 Reschedule emails sent');
+  } catch (err: any) {
+    console.error('⚠️ Email error:', err.message);
   }
 }
 
-/**
- * Handles booking cancellation
- */
 async function handleBookingCancelled(payload: any) {
   console.log('=== HANDLING BOOKING_CANCELLED ===');
   
-  const uid = payload.uid;
-  const cancellationReason = 
-    payload.cancellationReason || 
-    payload.reason || 
-    payload.cancelReason || 
-    null;
+  const uid = payload.uid || payload.bookingUid;
+  const reason = payload.cancellationReason || payload.reason || payload.cancelReason || null;
 
   if (!uid) {
     throw new Error('Missing uid for cancellation');
   }
 
-  const appointment = await prisma.appointment.findUnique({
+  // Find appointment
+  let appointment = await prisma.appointment.findUnique({
     where: { calComUid: uid }
   });
 
+  // Fallback searches
+  if (!appointment && payload.id) {
+    console.log(`⚠️ Trying by booking ID: ${payload.id}`);
+    appointment = await prisma.appointment.findFirst({
+      where: { calComBookingId: payload.id }
+    });
+  }
+
+  if (!appointment && payload.attendees?.length > 0) {
+    const email = payload.attendees[0].email;
+    console.log(`⚠️ Trying by email: ${email}`);
+    appointment = await prisma.appointment.findFirst({
+      where: { 
+        attendeeEmail: email,
+        status: { not: 'CANCELLED' }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+  }
+
   if (!appointment) {
-    console.warn(`⚠️ Appointment not found: ${uid}`);
+    console.warn('⚠️ Booking not found - may not exist in database');
     return;
   }
 
-  await prisma.appointment.update({
-    where: { calComUid: uid },
+  // Skip if already cancelled
+  if (appointment.status === 'CANCELLED') {
+    console.log('✅ Already cancelled - no action needed');
+    return;
+  }
+
+  console.log(`🔍 Found appointment ${appointment.id} - updating to CANCELLED`);
+
+  // Update to cancelled
+  const updated = await prisma.appointment.update({
+    where: { id: appointment.id },
     data: {
       status: 'CANCELLED',
-      cancellationReason
+      cancellationReason: reason
     }
   });
 
-  console.log(`✅ Appointment cancelled: ${appointment.id}`);
+  console.log(`✅ Cancelled appointment ${updated.id}`);
 
   try {
     await Promise.all([
-      sendCancellationEmail(appointment),
-      sendAdminNotification(appointment, 'CANCELLED')
+      sendCancellationEmail(updated),
+      sendAdminNotification(updated, 'CANCELLED')
     ]);
-  } catch (emailError: any) {
-    console.error('⚠️ Failed to send emails:', emailError.message);
+    console.log('📧 Cancellation emails sent');
+  } catch (err: any) {
+    console.error('⚠️ Email error:', err.message);
   }
 }
