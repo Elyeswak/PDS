@@ -1,10 +1,11 @@
+// nuxt.config.ts
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
-  devtools: { enabled: true },
+  devtools: { enabled: false }, // Disable in production
   runtimeConfig: {
-    // Private keys (server-side only) - never exposed to client
+    // Private keys (server-side only)
     databaseUrl: process.env.DATABASE_URL,
     calComApiKey: process.env.CAL_COM_API_KEY,
     calComWebhookSecret: process.env.CAL_COM_WEBHOOK_SECRET,
@@ -16,15 +17,25 @@ export default defineNuxtConfig({
     
     // Public keys (exposed to client)
     public: {
-      calComUsername: process.env.CAL_COM_USERNAME,
-      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || 'consultation'
+      calComUsername: process.env.CAL_COM_USERNAME || 'your-username',
+      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || 'consultation',
+      siteUrl: process.env.SITE_URL || 'https://your-app.vercel.app'
     }
   },
   css: ["~/assets/css/main.css", "@mdi/font/css/materialdesignicons.css"],
   vite: {
     plugins: [tailwindcss()],
-    server: {
-     allowedHosts: true
-    },
   },
+  // Vercel-specific optimizations
+  nitro: {
+    preset: 'vercel',
+    // Optional: Configure serverless function regions
+    vercel: {
+      regions: ['iad1'] // US East
+    }
+  },
+  // Build optimizations
+  build: {
+    transpile: [] // Add any packages that need transpilation
+  }
 });
