@@ -2,11 +2,13 @@
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
-  compatibilityDate: "2025-07-15",
-  devtools: { enabled: false }, // Disable in production
+  compatibilityDate: "2025-01-15",
+  devtools: { enabled: process.env.NODE_ENV === 'development' },
+  
   runtimeConfig: {
-    // Private keys (server-side only)
+    // Private keys (server-side only - NEVER exposed to client)
     databaseUrl: process.env.DATABASE_URL,
+    directUrl: process.env.DIRECT_URL, // ✅ Added for Prisma migrations
     calComApiKey: process.env.CAL_COM_API_KEY,
     calComWebhookSecret: process.env.CAL_COM_WEBHOOK_SECRET,
     smtpHost: process.env.SMTP_HOST,
@@ -17,25 +19,50 @@ export default defineNuxtConfig({
     
     // Public keys (exposed to client)
     public: {
-      calComUsername: process.env.CAL_COM_USERNAME || 'your-username',
-      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || 'consultation',
-      siteUrl: process.env.SITE_URL || 'https://your-app.vercel.app'
+      calComUsername: process.env.CAL_COM_USERNAME || 'test145',
+      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || 'car',
+      siteUrl: process.env.SITE_URL || 'http://localhost:3000'
     }
   },
-  css: ["~/assets/css/main.css", "@mdi/font/css/materialdesignicons.css"],
+  
+  css: [
+    "~/assets/css/main.css",
+    "@mdi/font/css/materialdesignicons.css"
+  ],
+  
   vite: {
     plugins: [tailwindcss()],
   },
-  // Vercel-specific optimizations
+  
+  // Vercel deployment configuration
   nitro: {
     preset: 'vercel',
-    // Optional: Configure serverless function regions
+    
+    // Vercel-specific settings
     vercel: {
-      regions: ['iad1'] // US East
+      regions: ['iad1'], // US East (change based on your users' location)
+      
+      // Serverless function configuration
+      functions: {
+        // Increase timeout for database operations (max 60s on Hobby plan)
+        maxDuration: 30,
+      }
+    },
+    
+    // Prisma compatibility
+    experimental: {
+      tasks: true
     }
   },
+  
   // Build optimizations
   build: {
-    transpile: [] // Add any packages that need transpilation
+    transpile: ['@prisma/client']
+  },
+  
+  // TypeScript configuration
+  typescript: {
+    strict: true,
+    typeCheck: false // Disable during build for faster deployments
   }
 });
