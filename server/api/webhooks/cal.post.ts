@@ -86,34 +86,6 @@ export default defineEventHandler(async (event) => {
 });
 
 /**
- * Safely extract VIM value from Cal.com payload
- * Checks multiple possible locations in the payload
- */
-function extractVIM(payload: any): string | null {
-  // Try responses.VIM.value first (most common)
-  if (payload.responses?.VIM?.value) {
-    return String(payload.responses.VIM.value);
-  }
-  
-  // Try userFieldsResponses.VIM.value
-  if (payload.userFieldsResponses?.VIM?.value) {
-    return String(payload.userFieldsResponses.VIM.value);
-  }
-  
-  // Try flattened responses (from normalizeCalComPayload)
-  if (payload.responses?.vim) {
-    return String(payload.responses.vim);
-  }
-  
-  // Try direct VIM field
-  if (payload.VIM?.value) {
-    return String(payload.VIM.value);
-  }
-  
-  return null;
-}
-
-/**
  * Handles minimal payload from event-type webhooks
  * These webhooks send the same minimal data for ALL events
  * Must fetch from Cal.com API to determine actual status
@@ -273,8 +245,6 @@ function detectEventType(normalized: any, raw: any): string {
   // 5. FALLBACK: If no triggerEvent and minimal payload, always verify with API
   // Event-type webhooks send same minimal payload for ALL events (created, cancelled, rescheduled)
   const hasMinimalPayload = Object.keys(raw).length < 10 && !raw.startTime && !raw.endTime;
-  const hasUid = !!(raw.uid || normalized.uid);
-  const hasAttendees = !!(raw.attendees || normalized.attendees);
   
   if (hasMinimalPayload && hasUid) {
     console.log('⚠️ Minimal payload detected - requires API verification');
@@ -505,7 +475,6 @@ async function handleBookingCreated(payload: any, config: any) {
   }
 
   const responses = bookingData.responses || bookingData.customInputs || {};
-  const vim = extractVIM(bookingData);
   
   // Create appointment
   const appointment = await prisma.appointment.create({
@@ -523,7 +492,6 @@ async function handleBookingCreated(payload: any, config: any) {
       companyName: responses.companyName || null,
       serviceInterest: responses.serviceInterest || null,
       specialRequirements: responses.specialRequirements || null,
-      vim: vim,
       meetingUrl: bookingData.meetingUrl || bookingData.location || null
     }
   });
@@ -597,7 +565,6 @@ async function handleBookingRescheduled(payload: any, config: any) {
   // Create new booking
   const attendees = bookingData.attendees || [];
   const attendee = attendees[0];
-  const vim = extractVIM(bookingData) || oldBooking.vim;
 
   const newAppointment = await prisma.appointment.create({
     data: {
@@ -614,7 +581,6 @@ async function handleBookingRescheduled(payload: any, config: any) {
       companyName: oldBooking.companyName,
       serviceInterest: oldBooking.serviceInterest,
       specialRequirements: oldBooking.specialRequirements,
-      vim: vim,
       meetingUrl: bookingData.meetingUrl || oldBooking.meetingUrl
     }
   });
