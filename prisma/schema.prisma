@@ -1,38 +1,40 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")        // Pooled connection
-  directUrl = env("DIRECT_URL")          // Direct connection for migrations
+  provider = "postgresql"
+  url = env("DATABASE_URL")
 }
 
 model Appointment {
   id                String   @id @default(cuid())
-  calComBookingId   Int      @unique
-  calComUid         String   @unique
+  calComBookingId   Int      @unique // Cal.com booking ID
+  calComUid         String   @unique // Cal.com unique identifier
   
+  // Attendee Information
   attendeeName      String
   attendeeEmail     String
   attendeeTimezone  String
   
+  // Booking Details
   title             String
   description       String?
   startTime         DateTime
   endTime           DateTime
   status            BookingStatus @default(CONFIRMED)
   
+  // Custom Fields
   companyName       String?
   serviceInterest   String?
   specialRequirements String? @db.Text
   
+  // Metadata
   meetingUrl        String?
   cancellationReason String?
-  rescheduleUid     String?
+  rescheduleUid     String? // Links to new booking if rescheduled
   
+  // Timestamps
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   
