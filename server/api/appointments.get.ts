@@ -17,6 +17,10 @@ export default defineEventHandler(async (event) => {
       ];
     }
     
+    if (query.vim) {
+      where.vim = query.vim as string;
+    }
+    
     if (query.dateFrom || query.dateTo) {
       where.startTime = {};
       if (query.dateFrom) {

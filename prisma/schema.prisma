@@ -28,6 +28,7 @@ model Appointment {
   companyName       String?
   serviceInterest   String?
   specialRequirements String? @db.Text
+  vim               String?
   
   meetingUrl        String?
   cancellationReason String?
