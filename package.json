@@ -1,13 +1,10 @@
 {
   "name": "pds_project",
   "type": "module",
-  "private": true,
   "scripts": {
     "build": "prisma generate && nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "dev": "nuxt dev"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

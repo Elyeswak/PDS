@@ -1,9 +1,7 @@
-// server/api/webhooks/cal.post.ts
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '~/server/utils/prisma';
 import crypto from 'crypto';
 import { sendAdminNotification, sendUserConfirmation, sendCancellationEmail } from '../../utils/email';
 
-const prisma = new PrismaClient();
 
 export default defineEventHandler(async (event) => {
   try {

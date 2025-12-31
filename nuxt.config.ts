@@ -3,8 +3,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-01-15",
-  devtools: { enabled: process.env.NODE_ENV === 'development' },
-  
+  devtools: { enabled: process.env.NODE_ENV === "development" },
+
   runtimeConfig: {
     // Private keys (server-side only - NEVER exposed to client)
     databaseUrl: process.env.DATABASE_URL,
@@ -16,53 +16,39 @@ export default defineNuxtConfig({
     smtpUser: process.env.SMTP_USER,
     smtpPass: process.env.SMTP_PASS,
     adminEmail: process.env.ADMIN_EMAIL,
-    
+
     // Public keys (exposed to client)
     public: {
-      calComUsername: process.env.CAL_COM_USERNAME || 'test145',
-      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || 'car',
-      siteUrl: process.env.SITE_URL || 'http://localhost:3000'
-    }
+      calComUsername: process.env.CAL_COM_USERNAME || "test145",
+      calComEventSlug: process.env.CAL_COM_EVENT_SLUG || "car",
+      siteUrl: process.env.SITE_URL || "http://localhost:3000",
+    },
   },
-  
-  css: [
-    "~/assets/css/main.css",
-    "@mdi/font/css/materialdesignicons.css"
-  ],
-  
+
+  css: ["~/assets/css/main.css", "@mdi/font/css/materialdesignicons.css"],
+
   vite: {
     plugins: [tailwindcss()],
   },
-  
-  // Vercel deployment configuration
+
   nitro: {
-    preset: 'vercel',
-    
-    // Vercel-specific settings
-    vercel: {
-      regions: ['iad1'], // US East (change based on your users' location)
-      
-      // Serverless function configuration
-      functions: {
-        // Increase timeout for database operations (max 60s on Hobby plan)
-        maxDuration: 30,
-      }
+    preset: "vercel",
+
+    externals: {
+      inline: [],
+      external: ["@prisma/client", ".prisma/client"],
     },
-    
-    // Prisma compatibility
-    experimental: {
-      tasks: true
-    }
+
+    vercel: {
+      functions: {
+        maxDuration: 30,
+      },
+    },
   },
-  
-  // Build optimizations
-  build: {
-    transpile: ['@prisma/client']
-  },
-  
+
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: false // Disable during build for faster deployments
-  }
+    typeCheck: false, // Disable during build for faster deployments
+  },
 });
