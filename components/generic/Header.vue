@@ -34,12 +34,6 @@
                 TESTIMONIAL
               </NuxtLink>
               <NuxtLink
-                to="/blog"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
-              >
-                BLOG
-              </NuxtLink>
-              <NuxtLink
                 to="/contact"
                 class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
               >
@@ -257,12 +251,6 @@
           class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
         >
           TESTIMONIAL
-        </NuxtLink>
-        <NuxtLink
-          to="/blog"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
-        >
-          BLOG
         </NuxtLink>
         <NuxtLink
           to="/contact"
