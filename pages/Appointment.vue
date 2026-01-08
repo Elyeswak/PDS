@@ -280,7 +280,7 @@
               <input
                 v-model="filters.search"
                 type="text"
-                placeholder="Name, email, VIM..."
+                placeholder="Name, email, VIN..."
                 class="w-full rounded-xl border-2 border-gray-200 shadow-sm focus:border-[#ff4500] focus:ring-2 focus:ring-[#ff4500]/20 transition-all pl-10 pr-4 py-3 font-medium text-gray-700 placeholder-gray-400"
                 @input="fetchAppointments"
               />
@@ -426,7 +426,7 @@
                     <th
                       class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                     >
-                      VIM / Reason
+                      VIN / Reason
                     </th>
                     <th
                       class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
@@ -555,7 +555,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                       <button
                         @click="viewDetails(appointment)"
-                        class="inline-flex items-center gap-2 text-[#ff4500] hover:text-[#ff6b35] font-bold transition-colors group"
+                        class="inline-flex items-center gap-2 text-[#ff4500] hover:text-[#ff6b35] font-bold transition-colors group cursor-pointer"
                       >
                         <span>View Details</span>
                         <svg
@@ -897,7 +897,7 @@
             >
               <label
                 class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >VIM Number</label
+                >VIN Number</label
               >
               <p class="text-xl font-mono font-bold text-[#ff4500]">
                 {{ selectedAppointment.vim }}
