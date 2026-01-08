@@ -63,6 +63,7 @@ export default defineEventHandler(async (event) => {
         serviceInterest: true,
         specialRequirements: true,
         reason: true,
+        address: true,
         vim: true,
         meetingUrl: true,
         cancellationReason: true,

@@ -216,6 +216,8 @@ async function handleBookingCreated(payload: CalComBooking, config: any) {
   // Extract reason - it's under responses.reason.value
   const reasonField = responses.reason || responses.Reason;
   const reasonValue = reasonField?.value || null;
+  const addressField = responses.address || responses.Address;
+const addressValue = addressField?.value || null;
 
   // Extract phone from responses if not in attendee
   const phoneField = responses.attendeePhoneNumber || responses.phoneNumber || responses.phone;
@@ -270,7 +272,7 @@ async function handleBookingCreated(payload: CalComBooking, config: any) {
     // Custom fields from responses
     vim: vimValue,
     reason: reasonValue,
-    
+    address: addressValue, 
     // Meeting info
     meetingUrl: videoCallUrl,
     

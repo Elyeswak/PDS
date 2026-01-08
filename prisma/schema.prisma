@@ -30,6 +30,7 @@ model Appointment {
   companyName         String?
   serviceInterest     String?
   specialRequirements String? @db.Text
+  address             String? @db.Text 
   reason              String? @db.Text // NEW FIELD
   vim                 String? // NEW FIELD - internal variable
   
