@@ -50,37 +50,30 @@
             </p>
           </div>
 
-          <div class="space-y-8 mb-8">
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <span class="font-bold text-gray-900 text-lg"
-                  >Engine Solution</span
-                >
-                <span class="font-bold text-gray-900 text-lg">90%</span>
+          <!-- Animated Progress Bars -->
+          <div ref="progressSection" class="space-y-8 mb-12">
+            <div class="min-h-[60px]">
+              <div class="flex justify-between items-center mb-3">
+                <span class="font-bold text-gray-900 text-lg">Engine Solution</span>
+                <span class="font-bold text-[#ff4500] text-lg">{{ animatedEngineValue }}%</span>
               </div>
-              <div
-                class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden"
-              >
+              <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
-                  class="bg-[#ff4500] h-full rounded-full"
-                  style="width: 90%"
+                  class="bg-[#ff4500] h-full rounded-full transition-all duration-[2500ms] ease-out"
+                  :style="{ width: `${animatedEngineValue}%` }"
                 ></div>
               </div>
             </div>
 
-            <div>
-              <div class="flex justify-between items-center mb-2">
-                <span class="font-bold text-gray-900 text-lg"
-                  >Engine Diagnostics</span
-                >
-                <span class="font-bold text-gray-900 text-lg">85%</span>
+            <div class="min-h-[60px]">
+              <div class="flex justify-between items-center mb-3">
+                <span class="font-bold text-gray-900 text-lg">Engine Diagnostics</span>
+                <span class="font-bold text-[#ff4500] text-lg">{{ animatedDiagnosticsValue }}%</span>
               </div>
-              <div
-                class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden"
-              >
+              <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
-                  class="bg-[#ff4500] h-full rounded-full"
-                  style="width: 85%"
+                  class="bg-[#ff4500] h-full rounded-full transition-all duration-[2500ms] ease-out"
+                  :style="{ width: `${animatedDiagnosticsValue}%` }"
                 ></div>
               </div>
             </div>
@@ -96,9 +89,7 @@
         </div>
 
         <!-- Right visual area (images + badge) -->
-        <div
-          class="relative h-[480px] lg:h-[560px] flex items-start justify-end"
-        >
+        <div class="relative h-[480px] lg:h-[560px] flex items-start justify-end">
           <!-- A wrapper to control positioning -->
           <div class="relative w-full max-w-[520px] h-full">
             <!-- Big image - positioned near the top-right -->
@@ -124,7 +115,7 @@
               >
                 <div class="flex items-center gap-2">
                   <div class="flex items-baseline">
-                    <span class="text-2xl font-medium leading-none">20</span>
+                    <span class="text-2xl font-medium leading-none">{{ animatedYearsValue }}</span>
                     <span class="text-base md:text-xl font-medium ml-1">+</span>
                   </div>
                   <div>
@@ -152,8 +143,24 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+
 const activeTab = ref("about");
+const progressSection = ref(null);
+
+// Animation values
+const animatedEngineValue = ref(0);
+const animatedDiagnosticsValue = ref(0);
+const animatedYearsValue = ref(0);
+
+// Target values
+const engineTarget = 90;
+const diagnosticsTarget = 85;
+const yearsTarget = 20;
+
+// Animation state
+let hasAnimated = false;
+let observer = null;
 
 const tabClass = (tab) =>
   [
@@ -162,4 +169,92 @@ const tabClass = (tab) =>
       ? "bg-[#ff4500] text-white"
       : "bg-gray-100 text-gray-900 hover:bg-gray-200",
   ].join(" ");
+
+// Easing function for smooth animation
+const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+// Animate a single value
+const animateValue = (start, end, duration, callback) => {
+  const startTime = performance.now();
+  
+  const animate = (currentTime) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easedProgress = easeOutQuart(progress);
+    const current = Math.round(start + (end - start) * easedProgress);
+    
+    callback(current);
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  };
+  
+  requestAnimationFrame(animate);
+};
+
+// Start all animations
+const startAnimations = () => {
+  if (hasAnimated) return;
+  hasAnimated = true;
+
+  // Animate Engine Solution (starts immediately, 2.5s duration - slower)
+  setTimeout(() => {
+    animateValue(0, engineTarget, 2500, (val) => {
+      animatedEngineValue.value = val;
+    });
+  }, 100);
+
+  // Animate Engine Diagnostics (starts after 300ms delay, 2.5s duration)
+  setTimeout(() => {
+    animateValue(0, diagnosticsTarget, 2500, (val) => {
+      animatedDiagnosticsValue.value = val;
+    });
+  }, 400);
+
+  // Animate Years badge (starts after 500ms, 2s duration)
+  setTimeout(() => {
+    animateValue(0, yearsTarget, 2000, (val) => {
+      animatedYearsValue.value = val;
+    });
+  }, 600);
+};
+
+onMounted(() => {
+  // Use Intersection Observer to trigger animation when section is visible
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          startAnimations();
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Trigger when 30% of the section is visible
+    }
+  );
+
+  if (progressSection.value) {
+    observer.observe(progressSection.value);
+  }
+});
+
+onUnmounted(() => {
+  if (observer) {
+    observer.disconnect();
+  }
+});
 </script>
+
+<style scoped>
+/* Optional: Add a pulse effect to the percentage when it reaches target */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+</style>

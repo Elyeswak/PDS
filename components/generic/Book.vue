@@ -1,102 +1,166 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="grid lg:grid-cols-12 gap-8">
-        
-        <!-- Left Panel - Compact Sidebar -->
-        <div class="lg:col-span-4 xl:col-span-3 bg-white rounded-xl shadow-lg p-6">
-          <div class="sticky top-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4">
-              Schedule Appointment
-            </h2>
-            <p class="text-gray-600 mb-6 text-sm">
-              Book a consultation with our team in just a few clicks.
-            </p>
-
-            <ul class="space-y-4 text-gray-700 mb-8">
-              <li class="flex items-start">
-                <svg class="h-5 w-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="text-sm">Flexible Scheduling</span>
-              </li>
-              <li class="flex items-start">
-                <svg class="h-5 w-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span class="text-sm">Instant Confirmation</span>
-              </li>
-              <li class="flex items-start">
-                <svg class="h-5 w-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span class="text-sm">Calendar Sync</span>
-              </li>
-              <li class="flex items-start">
-                <svg class="h-5 w-5 text-indigo-600 mr-3 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span class="text-sm">24/7 Support</span>
-              </li>
-            </ul>
-
-            <button class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition text-sm">
-              Get a Quote
-            </button>
-            
-            <div class="mt-6 pt-6 border-t border-gray-100">
-              <p class="text-xs text-gray-500">
-                Need help? <a href="#" class="text-indigo-600 hover:text-indigo-800">Contact support</a>
-              </p>
-            </div>
+  <section class="py-16 lg:py-24 bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+      
+      <!-- Section Header -->
+      <div class="text-center mb-12 lg:mb-16">
+        <div class="flex items-center justify-center gap-3 mb-4">
+          <div class="flex flex-col gap-1 items-end">
+            <div class="w-12 h-0.5 bg-[#ff4500]"></div>
+            <div class="w-8 h-0.5 bg-[#ff4500]"></div>
+          </div>
+          <span class="text-[#ff4500] font-bold text-sm uppercase tracking-wider">
+            BOOK NOW
+          </span>
+          <div class="flex flex-col gap-1 items-start">
+            <div class="w-12 h-0.5 bg-[#ff4500]"></div>
+            <div class="w-8 h-0.5 bg-[#ff4500]"></div>
           </div>
         </div>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          Schedule Your Appointment
+        </h2>
+        <p class="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto">
+          Book a consultation with our expert team in just a few clicks. We're here to help!
+        </p>
+      </div>
 
-        <!-- Right Panel - Full-width Calendar -->
-        <div class="lg:col-span-8 xl:col-span-9">
+      <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
+        
+        <!-- Left Panel - Info Cards (Smaller) -->
+        <div class="lg:col-span-3 space-y-4">
+          
+          <!-- Main Info Card -->
+          <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-100 hover:shadow-xl transition-all duration-300">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="bg-gradient-to-r from-[#ff4500] to-[#ff6b35] p-2 rounded-lg">
+                <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-gray-900">Quick Booking</h3>
+            </div>
+            
+            <p class="text-gray-600 text-sm mb-4">
+              Schedule in minutes with our streamlined system.
+            </p>
+
+            <ul class="space-y-3">
+              <li class="flex items-center gap-2 text-sm">
+                <div class="flex-shrink-0 w-6 h-6 bg-green-100 rounded-md flex items-center justify-center">
+                  <svg class="h-3.5 w-3.5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Flexible Scheduling</span>
+              </li>
+
+              <li class="flex items-center gap-2 text-sm">
+                <div class="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+                  <svg class="h-3.5 w-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Instant Confirmation</span>
+              </li>
+
+              <li class="flex items-center gap-2 text-sm">
+                <div class="flex-shrink-0 w-6 h-6 bg-purple-100 rounded-md flex items-center justify-center">
+                  <svg class="h-3.5 w-3.5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">Calendar Sync</span>
+              </li>
+
+              <li class="flex items-center gap-2 text-sm">
+                <div class="flex-shrink-0 w-6 h-6 bg-orange-100 rounded-md flex items-center justify-center">
+                  <svg class="h-3.5 w-3.5 text-[#ff4500]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700">24/7 Support</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- CTA Card -->
+          <div class="bg-gradient-to-br from-[#ff4500] to-[#ff6b35] rounded-xl shadow-lg p-5 text-white">
+            <div class="flex items-center gap-2 mb-3">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <h3 class="text-lg font-bold">Need Help?</h3>
+            </div>
+            <p class="mb-4 text-white/90 text-sm">
+              Questions? Our team is ready to assist you.
+            </p>
+            <button class="w-full py-2.5 px-4 bg-white text-[#ff4500] font-bold text-sm rounded-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+              Contact Support
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Right Panel - Calendar Embed (Much Wider) -->
+        <div class="lg:col-span-9">
           
           <!-- Success Message -->
-          <div v-if="showSuccess" class="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 animate-fade-in">
-            <div class="flex items-center">
-              <svg class="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <p class="text-green-800 font-medium">Booking Confirmed! Check your email for details.</p>
+          <div v-if="showSuccess" class="mb-6 bg-green-50 border-2 border-green-200 rounded-xl p-5 animate-fade-in shadow-lg">
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-green-900 font-bold text-lg">Booking Confirmed!</p>
+                <p class="text-green-700 text-sm">Check your email for appointment details.</p>
+              </div>
             </div>
           </div>
 
           <!-- Error Message -->
-          <div v-if="showError" class="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 animate-fade-in">
-            <div class="flex items-center">
-              <svg class="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
-              <p class="text-red-700 font-medium">{{ errorMessage }}</p>
+          <div v-if="showError" class="mb-6 bg-red-50 border-2 border-red-200 rounded-xl p-5 animate-fade-in shadow-lg">
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-red-900 font-bold">Booking Error</p>
+                <p class="text-red-700 text-sm">{{ errorMessage }}</p>
+              </div>
             </div>
           </div>
 
           <!-- Loading State -->
-          <div v-if="isLoading" class="mb-4 bg-white rounded-lg border border-gray-200 p-6 flex items-center justify-center">
+          <div v-if="isLoading" class="bg-white rounded-2xl border-2 border-gray-200 shadow-xl p-12 flex items-center justify-center">
             <div class="text-center">
-              <svg class="animate-spin h-8 w-8 text-indigo-600 mx-auto mb-3" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span class="text-gray-700 font-medium">Loading booking calendar...</span>
-              <p class="text-gray-500 text-sm mt-1">This should only take a moment</p>
+              <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#ff4500] to-[#ff6b35] rounded-full mb-4">
+                <svg class="animate-spin h-8 w-8 text-white" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </div>
+              <p class="text-gray-900 font-bold text-lg mb-2">Loading Calendar...</p>
+              <p class="text-gray-600 text-sm">This should only take a moment</p>
             </div>
           </div>
 
-          <!-- Cal.com Embed Container - Full width with fixed height -->
-          <div class="relative">
-            <div ref="calEmbed" class="cal-embed-container"></div>
+          <!-- Cal.com Embed Container -->
+          <div v-show="!isLoading" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+            <div class="relative">
+              <div ref="calEmbed" class="cal-embed-container p-4 sm:p-6"></div>
+            </div>
           </div>
 
         </div>
 
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -119,9 +183,12 @@ onMounted(() => {
   }
 
   try {
-    // Create the embed HTML
+    // Create the embed HTML - auto height on mobile
+    const isMobile = window.innerWidth < 768;
+    const embedHeight = isMobile ? 'auto' : '650px';
+    
     const embedHTML = `
-      <div style="width:100%;height:100%;overflow:auto;min-height:600px" id="cal-inline"></div>
+      <div style="width:100%;height:${embedHeight};overflow:auto;${isMobile ? 'min-height:550px;' : ''}" id="cal-inline"></div>
     `;
     
     calEmbed.value.innerHTML = embedHTML;
@@ -146,25 +213,22 @@ onMounted(() => {
         calLink:"test145/call",
         config: {
           "layout": "month_view",
-          "theme": "light",
-          "height": "600px"
+          "theme": "light"
         }
       });
     `;
 
     script.onload = () => {
-      isLoading.value = false;
-      
-      // Force the Cal.com iframe to respect our container height
       setTimeout(() => {
+        isLoading.value = false;
+        
+        // Force consistent height for the iframe (only on desktop)
         const iframe = calEmbed.value?.querySelector('iframe');
-        if (iframe) {
-          iframe.style.height = '600px';
-          iframe.style.minHeight = '600px';
-          iframe.style.maxHeight = '600px';
-          iframe.style.width = '100%';
+        if (iframe && !isMobile) {
+          iframe.style.height = '650px';
+          iframe.style.maxHeight = '650px';
         }
-      }, 1000);
+      }, 800);
     };
 
     script.onerror = () => {
@@ -182,6 +246,7 @@ onMounted(() => {
       }
     }, 5000);
 
+    // Listen for booking events
     messageListener = (e: MessageEvent) => {
       if (!["https://app.cal.com", "https://cal.com"].includes(e.origin)) return;
       const data = e.data;
@@ -213,31 +278,17 @@ onUnmounted(() => {
 
 <style scoped>
 .cal-embed-container { 
-  height: 600px;
-  min-height: 600px;
-  max-height: 600px;
+  height: 650px;
+  max-height: 650px;
   width: 100%;
   position: relative;
 }
 
-/* Custom scrollbar */
-.cal-embed-container::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.cal-embed-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.cal-embed-container::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-.cal-embed-container::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+/* Ensure the iframe has proper spacing */
+.cal-embed-container :deep(iframe) {
+  border-radius: 12px;
+  height: 650px !important;
+  max-height: 650px !important;
 }
 
 .animate-fade-in { 
@@ -268,26 +319,50 @@ onUnmounted(() => {
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .cal-embed-container {
-    height: 550px;
-    min-height: 550px;
-    max-height: 550px;
+    height: 600px;
+    max-height: 600px;
+  }
+  
+  .cal-embed-container :deep(iframe) {
+    height: 600px !important;
+    max-height: 600px !important;
   }
 }
 
 @media (max-width: 768px) {
   .cal-embed-container {
-    height: 500px;
+    height: auto;
+    max-height: none;
+    min-height: 550px;
+  }
+  
+  .cal-embed-container :deep(iframe) {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 550px !important;
+  }
+  
+  .lg\:col-span-9 {
+    grid-column: span 12;
+  }
+  
+  .lg\:col-span-3 {
+    grid-column: span 12;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .cal-embed-container {
+    height: auto;
+    max-height: none;
     min-height: 500px;
-    max-height: 500px;
   }
   
-  .lg\:col-span-8 {
-    grid-column: span 12;
-  }
-  
-  .lg\:col-span-4 {
-    grid-column: span 12;
-    margin-bottom: 1.5rem;
+  .cal-embed-container :deep(iframe) {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 500px !important;
   }
 }
 </style>
