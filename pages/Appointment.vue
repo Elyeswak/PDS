@@ -93,7 +93,7 @@
             <input
               v-model="filters.search"
               type="text"
-              placeholder="Name or email..."
+              placeholder="Name, email, VIM..."
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
               @input="fetchAppointments"
             />
@@ -150,7 +150,7 @@
                   Date & Time
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Company / Service
+                  VIM / Reason
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
@@ -180,6 +180,9 @@
                       <div class="text-sm text-gray-500">
                         {{ appointment.attendeeEmail }}
                       </div>
+                      <div v-if="appointment.attendeePhoneNumber" class="text-xs text-gray-400 mt-0.5">
+                        📱 {{ appointment.attendeePhoneNumber }}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -195,11 +198,14 @@
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">
-                    {{ appointment.companyName || 'N/A' }}
+                  <div v-if="appointment.vim" class="text-sm font-mono text-indigo-600 mb-1">
+                    🔢 VIM: {{ appointment.vim }}
                   </div>
-                  <div class="text-sm text-gray-500">
-                    {{ appointment.serviceInterest || 'N/A' }}
+                  <div v-if="appointment.reason" class="text-sm text-gray-700">
+                    {{ appointment.reason }}
+                  </div>
+                  <div v-if="!appointment.vim && !appointment.reason" class="text-sm text-gray-400">
+                    N/A
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -251,6 +257,21 @@
             <div class="border-b pb-4">
               <label class="text-sm font-medium text-gray-500">Email</label>
               <p class="mt-1 text-gray-900">{{ selectedAppointment.attendeeEmail }}</p>
+            </div>
+
+            <div class="border-b pb-4" v-if="selectedAppointment.attendeePhoneNumber">
+              <label class="text-sm font-medium text-gray-500">Phone Number</label>
+              <p class="mt-1 text-gray-900">{{ selectedAppointment.attendeePhoneNumber }}</p>
+            </div>
+
+            <div class="border-b pb-4" v-if="selectedAppointment.vim">
+              <label class="text-sm font-medium text-gray-500">VIM Number</label>
+              <p class="mt-1 text-gray-900 font-mono text-lg">{{ selectedAppointment.vim }}</p>
+            </div>
+
+            <div class="border-b pb-4" v-if="selectedAppointment.reason">
+              <label class="text-sm font-medium text-gray-500">Reason</label>
+              <p class="mt-1 text-gray-900">{{ selectedAppointment.reason }}</p>
             </div>
 
             <div class="border-b pb-4">
@@ -322,12 +343,15 @@ interface Appointment {
   attendeeName: string;
   attendeeEmail: string;
   attendeeTimezone: string;
+  attendeePhoneNumber?: string;
   startTime: string;
   endTime: string;
   status: string;
   companyName?: string;
   serviceInterest?: string;
   specialRequirements?: string;
+  reason?: string;
+  vim?: string;
   meetingUrl?: string;
   cancellationReason?: string;
 }
@@ -369,7 +393,7 @@ async function fetchAppointments() {
     if (filters.value.dateTo) query.append('dateTo', filters.value.dateTo);
 
     const response = await $fetch(`/api/appointments?${query.toString()}`);
-    appointments.value = response as Appointment[];
+    appointments.value = (response as any).appointments || [];
   } catch (error) {
     console.error('Failed to fetch appointments:', error);
   } finally {

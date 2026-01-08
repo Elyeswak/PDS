@@ -143,7 +143,7 @@ onMounted(() => {
       Cal("init","car",{origin:"https://app.cal.com"});
       Cal.ns.car("inline",{
         elementOrSelector:"#cal-inline",
-        calLink:"test145/car",
+        calLink:"test145/call",
         config: {
           "layout": "month_view",
           "theme": "light",

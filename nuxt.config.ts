@@ -29,9 +29,13 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: [tailwindcss()],
+      server: {
+    cors: true,
+    allowedHosts: ['.ngrok-free.app'],
+  }
   },
 
-  nitro: {
+ nitro: {
     preset: "vercel",
 
     externals: {
@@ -46,9 +50,8 @@ export default defineNuxtConfig({
     },
   },
 
-  // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: false, // Disable during build for faster deployments
+    typeCheck: false,
   },
 });

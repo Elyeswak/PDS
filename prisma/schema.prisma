@@ -4,18 +4,20 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Appointment {
   id                String   @id @default(cuid())
-  calComBookingId   Int      @unique // Cal.com booking ID
-  calComUid         String    // Cal.com unique identifier
+  calComBookingId   Int      // Cal.com booking ID (removed @unique)
+  calComUid         String   @unique // Cal.com unique identifier
   
   // Attendee Information
-  attendeeName      String
-  attendeeEmail     String
-  attendeeTimezone  String
+  attendeeName        String
+  attendeeEmail       String
+  attendeeTimezone    String
+  attendeePhoneNumber String? // NEW FIELD
   
   // Booking Details
   title             String
@@ -24,10 +26,12 @@ model Appointment {
   endTime           DateTime
   status            BookingStatus @default(CONFIRMED)
   
-  // Custom Fields
-  companyName       String?
-  serviceInterest   String?
+  // Custom Fields (from Cal.com form responses)
+  companyName         String?
+  serviceInterest     String?
   specialRequirements String? @db.Text
+  reason              String? @db.Text // NEW FIELD
+  vim                 String? // NEW FIELD - internal variable
   
   // Metadata
   meetingUrl        String?
@@ -41,6 +45,8 @@ model Appointment {
   @@index([attendeeEmail])
   @@index([startTime])
   @@index([status])
+  @@index([calComUid])
+  @@index([calComBookingId])
   @@map("appointments")
 }
 
@@ -50,10 +56,12 @@ model WebhookLog {
   payload       Json
   success       Boolean  @default(true)
   errorMessage  String?  @db.Text
+  processingTime Int?    // milliseconds
   createdAt     DateTime @default(now())
   
   @@index([eventType])
   @@index([createdAt])
+  @@index([success])
   @@map("webhook_logs")
 }
 
