@@ -4,6 +4,7 @@
   "scripts": {
     "build": "prisma generate && nuxt build",
     "postinstall": "prisma generate",
+    "postbuild": "prisma generate && prisma migrate deploy",
     "dev": "nuxt dev"
   },
   "dependencies": {
