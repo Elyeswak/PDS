@@ -11,6 +11,8 @@
     "@mdi/font": "^7.4.47",
     "@prisma/client": "^6.19.1",
     "@tailwindcss/vite": "^4.1.16",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.3",
     "lucide-vue-next": "^0.553.0",
     "nodemailer": "^7.0.12",
     "nuxt": "^4.2.0",
@@ -21,6 +23,8 @@
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^7.0.4"
   }
 }

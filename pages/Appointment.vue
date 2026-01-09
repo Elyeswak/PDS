@@ -1,7 +1,14 @@
 <template>
-  <div
-    class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100"
-  >
+  <!-- Loading check - prevents flash while checking auth -->
+  <div v-if="!isClient" class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
+    <div class="text-center">
+      <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-[#ff4500] mb-4"></div>
+      <p class="text-gray-600 font-medium">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div v-else class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
     <!-- Header Section -->
     <div
       class="bg-gradient-to-r from-[#ff4500] to-[#ff6b35] text-white py-12 lg:py-16"
@@ -1022,6 +1029,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 
+// Disable SSR for this page to prevent hydration issues
+definePageMeta({
+  ssr: false
+})
+
 interface Appointment {
   id: string;
   attendeeName: string;
@@ -1040,6 +1052,9 @@ interface Appointment {
   meetingUrl?: string;
   cancellationReason?: string;
 }
+
+// Client-side check to prevent flash
+const isClient = ref(false)
 
 const appointments = ref<Appointment[]>([]);
 const selectedAppointment = ref<Appointment | null>(null);
@@ -1106,6 +1121,7 @@ const stats = computed(() => {
 });
 
 onMounted(() => {
+  isClient.value = true
   fetchAppointments();
 });
 

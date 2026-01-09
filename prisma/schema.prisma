@@ -66,6 +66,22 @@ model WebhookLog {
   @@map("webhook_logs")
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String  
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+}
+
 enum BookingStatus {
   CONFIRMED
   CANCELLED
