@@ -14,9 +14,13 @@
             <p class="font-semibold mb-2">WE ARE AVAILABLE</p>
             <p class="text-gray-400">Mon-Sat: 09.00 am to 6.30 pm</p>
           </div>
-          <NuxtLink to="/contact" class="inline-block bg-[#ff4500] hover:bg-[#ff5722] text-white font-semibold px-8 py-3 transition-colors">
+          <a
+            href="#contact"
+            @click.prevent="scrollToSection('contact')"
+            class="inline-block bg-[#ff4500] hover:bg-[#ff5722] text-white font-semibold px-8 py-3 transition-colors cursor-pointer"
+          >
             CONTACT US
-          </NuxtLink>
+          </a>
         </div>
 
         <div>
@@ -26,40 +30,64 @@
           </h5>
           <ul class="space-y-3">
             <li>
-              <NuxtLink to="/about" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#about"
+                @click.prevent="scrollToSection('about')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
                 About Us
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink to="/services" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#services"
+                @click.prevent="scrollToSection('services')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
                 Popular Services
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink to="/why-choose" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#why-us"
+                @click.prevent="scrollToSection('why-us')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
                 Why Choose Us
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink to="/portfolio" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#products"
+                @click.prevent="scrollToSection('products')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
                 Portfolio
-              </NuxtLink>
+              </a>
             </li>
             <li>
-              <NuxtLink to="/blog" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#testimonial"
+                @click.prevent="scrollToSection('testimonial')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
-                Blog & News
-              </NuxtLink>
+                Testimonials
+              </a>
             </li>
             <li>
-              <NuxtLink to="/contact" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <a
+                href="#contact"
+                @click.prevent="scrollToSection('contact')"
+                class="text-gray-400 hover:text-white transition-colors flex items-center cursor-pointer"
+              >
                 <span class="mdi mdi-chevron-right mr-2"></span>
                 Contact Us
-              </NuxtLink>
+              </a>
             </li>
           </ul>
         </div>
@@ -148,5 +176,38 @@ const email = ref('');
 const handleSubscribe = () => {
   console.log('Subscribe with email:', email.value);
   email.value = '';
+};
+
+const scrollToSection = (sectionId) => {
+  // Scroll to top first (for home)
+  if (sectionId === 'home') {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    return;
+  }
+
+  // Check if we're on the home page
+  const currentPath = window.location.pathname;
+  
+  if (currentPath !== '/') {
+    // If not on home page, navigate to home with hash
+    window.location.href = `/#${sectionId}`;
+    return;
+  }
+
+  // If on home page, smooth scroll to section
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const headerHeight = 56; // Adjust based on your header height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
+  }
 };
 </script>
