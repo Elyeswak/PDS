@@ -99,9 +99,8 @@
               class="absolute right-0 top-0 w-[340px] md:w-[420px] lg:w-[480px] h-[340px] md:h-[420px] lg:h-[480px] object-cover shadow-lg z-10"
             />
 
-            <!-- Small image - anchored bottom-left, overlapping the split -->
             <div
-              class="absolute left-0 bottom-0 w-[180px] md:w-[220px] lg:w-[260px] h-[180px] md:h-[220px] lg:h-[260px] overflow-hidden shadow-lg z-20"
+              class="absolute left-0 bottom-0 w-[230px] md:w-[220px] lg:w-[260px] h-[220px] md:h-[220px] lg:h-[260px] overflow-hidden shadow-lg z-20"
             >
               <img
                 src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1200&h=1200&fit=crop"
@@ -109,7 +108,6 @@
                 class="w-full h-full object-cover"
               />
 
-              <!-- Orange banner over the small image -->
               <div
                 class="absolute left-0 top-0 transform bg-[#ff4500] text-white px-4 py-3 md:py-4 shadow-lg z-30"
               >

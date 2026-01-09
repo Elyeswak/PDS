@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-[#0a0a0a] text-white sticky top-0 z-50">
+  <header class="bg-[#0a0a0a] text-white top-0 left-0 right-0 z-50">
     <div class="relative">
       <nav class="relative z-10">
         <div
@@ -69,7 +69,10 @@
                 >
               </NuxtLink>
             </div>
-            <button @click="toggleMobileMenu" class="lg:hidden text-white">
+            <button
+              @click="toggleMobileMenu"
+              class="lg:hidden text-white ml-auto"
+            >
               <svg
                 v-if="!isMobileMenuOpen"
                 class="w-6 h-6"
@@ -102,7 +105,7 @@
           </div>
         </div>
       </nav>
-      
+
       <!-- Hidden on mobile (below lg breakpoint) -->
       <div class="relative overflow-hidden bg-[#1a1a1a] hidden lg:block">
         <div class="absolute inset-0">
@@ -208,21 +211,10 @@
               class="flex items-center space-x-3 lg:space-x-4 ml-14 shrink-0"
             >
               <button
-                @click="toggleSearch"
-                class="flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                @click="scrollToSection('book')"
+                class="bg-[#ff4500] text-white font-bold text-sm uppercase cursor-pointer tracking-wider px-10 py-4 hover:bg-[#cc3700] transition-colors"
               >
-                <span
-                  class="mdi mdi-magnify text-white text-lg lg:text-xl"
-                ></span>
-              </button>
-
-              <button
-                @click="toggleCart"
-                class="flex items-center justify-center w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <span
-                  class="mdi mdi-cart-outline text-white text-lg lg:text-xl"
-                ></span>
+                GET A QUOTE
               </button>
             </div>
           </div>
@@ -299,6 +291,15 @@
           </svg>
           <span class="font-normal">OFFICE LOCATION</span>
         </NuxtLink>
+        <button
+          @click="
+            scrollToSection('book');
+            toggleMobileMenu();
+          "
+          class="w-full bg-[#ff4500] text-white font-bold text-sm uppercase tracking-wider px-10 py-4 hover:bg-[#cc3700] transition-colors"
+        >
+          GET A QUOTE
+        </button>
       </div>
     </div>
   </header>
@@ -324,13 +325,5 @@ const scrollToSection = (sectionId) => {
       behavior: "smooth",
     });
   }
-};
-
-const toggleSearch = () => {
-  console.log("Search clicked");
-};
-
-const toggleCart = () => {
-  console.log("Cart clicked");
 };
 </script>

@@ -19,7 +19,7 @@
             </div>
 
             <!-- Decorative Badge -->
-            <div class="absolute bottom-6 left-6 bg-[#ff4500] text-white px-6 py-4 rounded-xl shadow-2xl">
+            <div class="absolute bottom-6 left-6 bg-[#ff4500] text-white px-6 py-4 rounded-non shadow-2xl">
               <div class="flex items-center gap-3">
                 <div class="flex items-baseline">
                   <span class="text-3xl lg:text-4xl font-bold">15</span>
