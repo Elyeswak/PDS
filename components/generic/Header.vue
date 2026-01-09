@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-[#0a0a0a] text-white">
+  <header class="bg-[#0a0a0a] text-white sticky top-0 z-50">
     <div class="relative">
       <nav class="relative z-10">
         <div
@@ -9,36 +9,41 @@
             <div
               class="hidden lg:flex items-center justify-center space-x-6 xl:space-x-10 font-medium"
             >
-              <NuxtLink
-                to="/"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
+              <a
+                href="#home"
+                @click.prevent="scrollToSection('home')"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 HOME +
-              </NuxtLink>
-              <NuxtLink
-                to="/about"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
+              </a>
+              <a
+                href="#about"
+                @click.prevent="scrollToSection('about')"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 ABOUT US
-              </NuxtLink>
-              <NuxtLink
-                to="/services"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
+              </a>
+              <a
+                href="#services"
+                @click.prevent="scrollToSection('services')"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 SERVICES
-              </NuxtLink>
-              <NuxtLink
-                to="/testimonial"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
+              </a>
+              <a
+                href="#testimonial"
+                @click.prevent="scrollToSection('testimonial')"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 TESTIMONIAL
-              </NuxtLink>
-              <NuxtLink
-                to="/contact"
-                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap"
+              </a>
+              <a
+                href="#contact"
+                @click.prevent="scrollToSection('contact')"
+                class="text-white hover:text-gray-300 transition-colors text-sm xl:text-base whitespace-nowrap cursor-pointer"
               >
                 CONTACT US
-              </NuxtLink>
+              </a>
             </div>
 
             <div
@@ -223,41 +228,62 @@
       </div>
     </div>
 
+    <!-- Mobile Menu -->
     <div
       v-if="isMobileMenuOpen"
       class="lg:hidden bg-[#1a1a1a] border-t border-gray-800"
     >
       <div class="container mx-auto px-6 py-4 space-y-3">
-        <NuxtLink
-          to="/"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        <a
+          href="#home"
+          @click.prevent="
+            scrollToSection('home');
+            toggleMobileMenu();
+          "
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium cursor-pointer"
         >
           HOME
-        </NuxtLink>
-        <NuxtLink
-          to="/about"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        </a>
+        <a
+          href="#about"
+          @click.prevent="
+            scrollToSection('about');
+            toggleMobileMenu();
+          "
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium cursor-pointer"
         >
           ABOUT US
-        </NuxtLink>
-        <NuxtLink
-          to="/services"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        </a>
+        <a
+          href="#services"
+          @click.prevent="
+            scrollToSection('services');
+            toggleMobileMenu();
+          "
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium cursor-pointer"
         >
           SERVICES
-        </NuxtLink>
-        <NuxtLink
-          to="/testimonial"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        </a>
+        <a
+          href="#testimonial"
+          @click.prevent="
+            scrollToSection('testimonial');
+            toggleMobileMenu();
+          "
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium cursor-pointer"
         >
           TESTIMONIAL
-        </NuxtLink>
-        <NuxtLink
-          to="/contact"
-          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium"
+        </a>
+        <a
+          href="#contact"
+          @click.prevent="
+            scrollToSection('contact');
+            toggleMobileMenu();
+          "
+          class="block text-white hover:text-gray-300 transition-colors py-2 font-medium cursor-pointer"
         >
           CONTACT US
-        </NuxtLink>
+        </a>
         <NuxtLink
           to="/location"
           class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors py-2"
@@ -281,6 +307,21 @@ const isMobileMenuOpen = ref(false);
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
+};
+
+const scrollToSection = (sectionId) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    // Get header height for offset
+    const headerHeight = 56; // Adjust based on your header height
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: "smooth",
+    });
+  }
 };
 
 const toggleSearch = () => {
