@@ -128,7 +128,7 @@ const paginationDots = computed(() => {
 });
 
 const visibleTestimonials = computed(() => {
-  const startIndex = activePage.value * 2;
+  const startIndex = activePage.value;
   return testimonials.slice(startIndex, startIndex + 2);
 });
 
