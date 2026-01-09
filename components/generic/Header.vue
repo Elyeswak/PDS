@@ -102,7 +102,9 @@
           </div>
         </div>
       </nav>
-      <div class="relative overflow-hidden bg-[#1a1a1a]">
+      
+      <!-- Hidden on mobile (below lg breakpoint) -->
+      <div class="relative overflow-hidden bg-[#1a1a1a] hidden lg:block">
         <div class="absolute inset-0">
           <div
             class="absolute left-0 top-0 bottom-0 w-[20%] md:w-[20%] xl:w-[25%] bg-[#ff4500]"
