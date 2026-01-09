@@ -24,6 +24,14 @@ export default defineNuxtConfig({
       siteUrl: process.env.SITE_URL || "http://localhost:3000",
     },
   },
+    // Add this to disable SSR globally (simplest fix)
+  ssr: false,
+  
+  // OR use route rules for specific pages only
+  routeRules: {
+    '/admin': { ssr: false },
+    '/appointment': { ssr: false }
+  },
 
   css: ["~/assets/css/main.css", "@mdi/font/css/materialdesignicons.css"],
 
