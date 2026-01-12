@@ -31,7 +31,7 @@
         <button
           class="w-fit rounded-xl bg-orange-500 px-8 py-4 text-lg font-bold text-white hover:bg-orange-600"
         >
-          Get a Quote
+          GET AN APPOITMENT
         </button>
       </template>
     </GenericBook>

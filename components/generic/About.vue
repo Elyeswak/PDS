@@ -54,8 +54,12 @@
           <div ref="progressSection" class="space-y-8 mb-12">
             <div class="min-h-[60px]">
               <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-gray-900 text-lg">Engine Solution</span>
-                <span class="font-bold text-[#ff4500] text-lg">{{ animatedEngineValue }}%</span>
+                <span class="font-bold text-gray-900 text-lg"
+                  >Engine Solution</span
+                >
+                <span class="font-bold text-[#ff4500] text-lg"
+                  >{{ animatedEngineValue }}%</span
+                >
               </div>
               <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
@@ -67,8 +71,12 @@
 
             <div class="min-h-[60px]">
               <div class="flex justify-between items-center mb-3">
-                <span class="font-bold text-gray-900 text-lg">Engine Diagnostics</span>
-                <span class="font-bold text-[#ff4500] text-lg">{{ animatedDiagnosticsValue }}%</span>
+                <span class="font-bold text-gray-900 text-lg"
+                  >Engine Diagnostics</span
+                >
+                <span class="font-bold text-[#ff4500] text-lg"
+                  >{{ animatedDiagnosticsValue }}%</span
+                >
               </div>
               <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
                 <div
@@ -80,16 +88,19 @@
           </div>
 
           <div>
-            <button
+            <NuxtLink
+              to="#book"
               class="bg-[#ff4500] text-white font-bold text-sm uppercase tracking-wider px-10 py-4 hover:bg-[#cc3700] transition-colors"
             >
-              GET A QUOTE
-            </button>
+              GET AN APPOITMENT
+            </NuxtLink>
           </div>
         </div>
 
         <!-- Right visual area (images + badge) -->
-        <div class="relative h-[480px] lg:h-[560px] flex items-start justify-end">
+        <div
+          class="relative h-[480px] lg:h-[560px] flex items-start justify-end"
+        >
           <!-- A wrapper to control positioning -->
           <div class="relative w-full max-w-[520px] h-full">
             <!-- Big image - positioned near the top-right -->
@@ -113,7 +124,9 @@
               >
                 <div class="flex items-center gap-2">
                   <div class="flex items-baseline">
-                    <span class="text-2xl font-medium leading-none">{{ animatedYearsValue }}</span>
+                    <span class="text-2xl font-medium leading-none">{{
+                      animatedYearsValue
+                    }}</span>
                     <span class="text-base md:text-xl font-medium ml-1">+</span>
                   </div>
                   <div>
@@ -162,7 +175,7 @@ let observer = null;
 
 const tabClass = (tab) =>
   [
-    "px-8 py-3 font-bold text-sm uppercase tracking-wider transition-all",
+    "px-8 py-3 font-bold text-sm uppercase tracking-wider transition-all cursor-pointer",
     activeTab.value === tab
       ? "bg-[#ff4500] text-white"
       : "bg-gray-100 text-gray-900 hover:bg-gray-200",
@@ -174,20 +187,20 @@ const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
 // Animate a single value
 const animateValue = (start, end, duration, callback) => {
   const startTime = performance.now();
-  
+
   const animate = (currentTime) => {
     const elapsed = currentTime - startTime;
     const progress = Math.min(elapsed / duration, 1);
     const easedProgress = easeOutQuart(progress);
     const current = Math.round(start + (end - start) * easedProgress);
-    
+
     callback(current);
-    
+
     if (progress < 1) {
       requestAnimationFrame(animate);
     }
   };
-  
+
   requestAnimationFrame(animate);
 };
 
@@ -248,7 +261,8 @@ onUnmounted(() => {
 <style scoped>
 /* Optional: Add a pulse effect to the percentage when it reaches target */
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {

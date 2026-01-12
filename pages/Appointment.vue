@@ -1,6 +1,6 @@
 <template>
   <!-- Loading check - prevents flash while checking auth -->
-  <div v-if="!isClient" class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
+  <div v-if="!isClient" class="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 flex items-center justify-center">
     <div class="text-center">
       <div class="inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-[#ff4500] mb-4"></div>
       <p class="text-gray-600 font-medium">Loading...</p>
@@ -11,7 +11,7 @@
   <div v-else class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
     <!-- Header Section -->
     <div
-      class="bg-gradient-to-r from-[#ff4500] to-[#ff6b35] text-white py-12 lg:py-16"
+      class="bg-gradient-to-r from-gray-900 to-[#ff6b35] text-white py-12 lg:py-16"
     >
       <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         <div class="flex items-center justify-center gap-3 mb-4">
@@ -821,162 +821,67 @@
       </div>
     </div>
 
-    <!-- Details Modal -->
+<!-- Details Modal -->
+<div
+  v-if="selectedAppointment"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 p-4 flex items-center justify-center"
+  @click.self="selectedAppointment = null"
+>
+  <div
+    class="relative w-full max-w-3xl bg-white rounded-xl shadow-2xl transform transition-all"
+  >
+    <!-- Modal Header -->
     <div
-      v-if="selectedAppointment"
-      class="fixed inset-0 bg-black/60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 p-4 sm:p-6 flex items-center justify-center"
-      @click.self="selectedAppointment = null"
+      class="bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white px-4 sm:px-6 py-4 rounded-t-xl"
     >
-      <div
-        class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl transform transition-all"
-      >
-        <!-- Modal Header -->
-        <div
-          class="bg-gradient-to-r from-[#ff4500] to-[#ff6b35] text-white px-6 sm:px-8 py-6 rounded-t-2xl"
-        >
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="text-2xl sm:text-3xl font-bold mb-2">
-                Appointment Details
-              </h3>
-              <p class="text-white/90 text-sm">Complete information</p>
-            </div>
-            <button
-              @click="selectedAppointment = null"
-              class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
-            >
-              <svg
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+      <div class="flex justify-between items-start gap-3">
+        <div class="min-w-0 flex-1">
+          <h3 class="text-xl sm:text-2xl font-bold mb-1 truncate">
+            {{ selectedAppointment.attendeeName }}
+          </h3>
+          <p class="text-white/60 text-xs truncate">
+            Appointment #{{ selectedAppointment.id.slice(0, 8) }}
+          </p>
         </div>
-
-        <!-- Modal Body -->
-        <div class="px-6 sm:px-8 py-6 max-h-[70vh] overflow-y-auto">
-          <div class="space-y-5">
-            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-[#ff4500]">
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Attendee Name</label
-              >
-              <p class="text-lg font-bold text-gray-900">
-                {{ selectedAppointment.attendeeName }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-blue-500">
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Email</label
-              >
-              <p class="text-gray-900">
-                {{ selectedAppointment.attendeeEmail }}
-              </p>
-            </div>
-
-            <div
-              v-if="selectedAppointment.attendeePhoneNumber"
-              class="bg-gray-50 rounded-xl p-4 border-l-4 border-green-500"
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <span
+            :class="getStatusBadgeClass(selectedAppointment.status)"
+            class="px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+          >
+            {{ selectedAppointment.status }}
+          </span>
+          <button
+            @click="selectedAppointment = null"
+            class="text-white/80 hover:text-white hover:bg-white/10 rounded-lg p-1.5 transition-colors"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Phone Number</label
-              >
-              <p class="text-gray-900 font-semibold">
-                {{ selectedAppointment.attendeePhoneNumber }}
-              </p>
-            </div>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
 
-            <div
-              v-if="selectedAppointment.vim"
-              class="bg-gradient-to-r from-[#ff4500]/10 to-[#ff6b35]/10 rounded-xl p-4 border-l-4 border-[#ff4500]"
-            >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >VIN Number</label
-              >
-              <p class="text-xl font-mono font-bold text-[#ff4500]">
-                {{ selectedAppointment.vim }}
-              </p>
-            </div>
-            <div
-              v-if="selectedAppointment.address"
-              class="bg-gray-50 rounded-xl p-4 border-l-4 border-blue-500"
-            >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Address</label
-              >
-              <p class="text-gray-900">{{ selectedAppointment.address }}</p>
-            </div>
-            <div
-              v-if="selectedAppointment.reason"
-              class="bg-gray-50 rounded-xl p-4 border-l-4 border-purple-500"
-            >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Reason</label
-              >
-              <p class="text-gray-900">{{ selectedAppointment.reason }}</p>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-indigo-500">
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Date & Time</label
-              >
-              <p class="text-gray-900 font-semibold mb-1">
-                {{ formatDate(selectedAppointment.startTime) }}
-              </p>
-              <p class="text-gray-700">
-                {{ formatTime(selectedAppointment.startTime) }} -
-                {{ formatTime(selectedAppointment.endTime) }}
-              </p>
-              <p class="text-sm text-gray-500 mt-2">
-                <span class="font-semibold">Timezone:</span>
-                {{ selectedAppointment.attendeeTimezone }}
-              </p>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-4 border-l-4 border-yellow-500">
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Status</label
-              >
-              <span
-                :class="getStatusClass(selectedAppointment.status)"
-                class="px-4 py-2 inline-flex text-sm font-bold rounded-full shadow-sm"
-              >
-                {{ selectedAppointment.status }}
-              </span>
-            </div>
-
-            <div
-              v-if="selectedAppointment.meetingUrl"
-              class="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500"
-            >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Meeting Link</label
-              >
-              <a
-                :href="selectedAppointment.meetingUrl"
-                target="_blank"
-                class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold transition-colors"
-              >
+    <!-- Modal Body -->
+    <div class="px-4 sm:px-6 py-4 max-h-[65vh] overflow-y-auto bg-gray-50">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Left Column: Appointment Details -->
+        <div class="space-y-3">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-3 py-2 border-b border-gray-200">
+              <div class="flex items-center gap-2">
                 <svg
-                  class="h-5 w-5"
+                  class="h-4 w-4 text-[#ff4500] flex-shrink-0"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -985,41 +890,349 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                   />
                 </svg>
-                <span>Join Meeting</span>
-              </a>
+                <h4 class="font-bold text-gray-900 text-sm truncate">Contact Details</h4>
+              </div>
             </div>
 
-            <div
-              v-if="selectedAppointment.cancellationReason"
-              class="bg-red-50 rounded-xl p-4 border-l-4 border-red-500"
-            >
-              <label
-                class="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2"
-                >Cancellation Reason</label
+            <div class="p-3 space-y-3">
+              <!-- Attendee Info -->
+              <div class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-blue-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Name</p>
+                  <p class="text-sm font-bold text-gray-900 truncate">
+                    {{ selectedAppointment.attendeeName }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-purple-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Email</p>
+                  <p class="text-sm font-semibold text-gray-900 break-all">
+                    {{ selectedAppointment.attendeeEmail }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Phone Number -->
+              <div
+                v-if="selectedAppointment.attendeePhoneNumber"
+                class="flex items-start gap-2.5"
               >
-              <p class="text-gray-900">
-                {{ selectedAppointment.cancellationReason }}
-              </p>
+                <div class="flex-shrink-0 w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Phone</p>
+                  <p class="text-sm font-bold text-gray-900 truncate">
+                    {{ selectedAppointment.attendeePhoneNumber }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- VIN Number -->
+              <div v-if="selectedAppointment.vim" class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-orange-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-[#ff4500]"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">VIN</p>
+                  <p class="text-sm font-mono font-bold text-[#ff4500] break-all">
+                    {{ selectedAppointment.vim }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div v-if="selectedAppointment.address" class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-red-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Address</p>
+                  <p class="text-sm text-gray-900 break-words">
+                    {{ selectedAppointment.address }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Reason -->
+              <div v-if="selectedAppointment.reason" class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-indigo-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-indigo-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Reason</p>
+                  <p class="text-sm text-gray-900 break-words">
+                    {{ selectedAppointment.reason }}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Modal Footer -->
-        <div
-          class="px-6 sm:px-8 py-5 bg-gray-50 rounded-b-2xl flex justify-end border-t"
-        >
-          <button
-            @click="selectedAppointment = null"
-            class="px-6 py-3 bg-gradient-to-r from-[#ff4500] to-[#ff6b35] text-white font-bold rounded-lg hover:shadow-lg transition-all"
+        <!-- Right Column: Date & Additional Info -->
+        <div class="space-y-3 flex flex-col">
+          <!-- Date & Time Section -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50 px-3 py-2 border-b border-gray-200">
+              <div class="flex items-center gap-2">
+                <svg
+                  class="h-4 w-4 text-[#ff4500] flex-shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <h4 class="font-bold text-gray-900 text-sm truncate">Schedule</h4>
+              </div>
+            </div>
+
+            <div class="p-3 space-y-3">
+              <div class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-blue-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Date</p>
+                  <p class="text-sm font-bold text-gray-900 break-words">
+                    {{ formatDate(selectedAppointment.startTime) }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-green-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-green-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Time</p>
+                  <p class="text-sm font-bold text-gray-900 truncate">
+                    {{ formatTime(selectedAppointment.startTime) }} - {{ formatTime(selectedAppointment.endTime) }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-2.5">
+                <div class="flex-shrink-0 w-9 h-9 bg-purple-50 rounded-lg flex items-center justify-center">
+                  <svg
+                    class="h-4 w-4 text-purple-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Timezone</p>
+                  <p class="text-sm font-semibold text-gray-900 truncate">
+                    {{ selectedAppointment.attendeeTimezone }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIN Display as License Plate - Takes remaining space -->
+          <div
+            v-if="selectedAppointment.vim"
+            class="bg-white rounded-lg shadow-sm border border-gray-200 p-3 flex-1 flex flex-col justify-center"
           >
-            Close
-          </button>
+            
+            <!-- License Plate Style -->
+            <div class="relative flex-1 flex items-center justify-center">
+              <div class="bg-linear-to-b from-gray-900 to-gray-800 rounded-lg p-3 border-2 border-blue-800 shadow-lg w-full">
+                <!-- Top stripe -->
+                <div class="bg-gray-900 text-white text-[10px] font-bold text-center py-0.5 mb-2 rounded">
+                  VEHICLE IDENTIFICATION
+                </div>
+                
+                <!-- License plate number -->
+                <div class="bg-white rounded px-3 py-3 border-2 border-gray-900">
+                  <div class="text-center">
+                    <span class="font-mono font-black text-blue-900 text-xl tracking-widest uppercase break-all">
+                      HJHK474
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- Bottom stripe -->
+                <div class="bg-gray-900 text-white text-[10px] font-bold text-center py-0.5 mt-2 rounded">
+                  REGISTERED VEHICLE
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cancellation Notice -->
+          <div
+            v-if="selectedAppointment.cancellationReason"
+            class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg shadow-sm border border-red-200 p-3"
+          >
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg
+                  class="h-4 w-4 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h4 class="font-bold text-gray-900 text-sm truncate">Cancellation</h4>
+            </div>
+            <p class="text-gray-800 text-sm font-medium break-words">
+              {{ selectedAppointment.cancellationReason }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Modal Footer -->
+    <div
+      class="px-4 sm:px-6 py-3 bg-white rounded-b-xl flex justify-end border-t border-gray-200"
+    >
+      <button
+        @click="selectedAppointment = null"
+        class="px-5 py-2 bg-gradient-to-r from-[#ff4500] to-[#ff6b35] text-white font-bold rounded-lg hover:shadow-md transition-all text-sm"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
 
     <!-- Bottom Spacing -->
     <div class="pb-12"></div>
@@ -1184,6 +1397,16 @@ function getStatusClass(status: string): string {
     classes[status as keyof typeof classes] ||
     "bg-gray-100 text-gray-800 border border-gray-200"
   );
+}
+
+function getStatusBadgeClass(status) {
+  const classes = {
+    CONFIRMED: "bg-green-500/20 text-green-300 border border-green-400",
+    CANCELLED: "bg-red-500/20 text-red-300 border border-red-400",
+    RESCHEDULED: "bg-yellow-500/20 text-yellow-300 border border-yellow-400",
+    NO_SHOW: "bg-gray-500/20 text-gray-300 border border-gray-400",
+  };
+  return classes[status] || "bg-gray-500/20 text-gray-300 border border-gray-400";
 }
 
 function viewDetails(appointment: Appointment) {

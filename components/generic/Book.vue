@@ -95,9 +95,9 @@
             <p class="mb-4 text-white/90 text-sm">
               Questions? Our team is ready to assist you.
             </p>
-            <button class="w-full py-2.5 px-4 bg-white text-[#ff4500] font-bold text-sm rounded-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+            <NuxtLink to="#contact" class="w-full min-w-full py-2.5 px-4 bg-white text-[#ff4500] font-bold text-sm rounded-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
               Contact Support
-            </button>
+            </NuxtLink>
           </div>
 
         </div>

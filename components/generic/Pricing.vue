@@ -13,7 +13,7 @@
           Mechanic Services Cost
         </h2>
       </div>
-      <button class="bg-[#eb3300] hover:bg-[#eb3300]/90 h-[60px] px-9 font-normal text-white text-base text-center tracking-[0] leading-[26px]">
+      <button class="bg-[#eb3300] hover:bg-[#eb3300]/90 h-[60px] px-9 font-bold cursor-pointer text-white text-base text-center tracking-[0] leading-[26px]">
         SEE ALL PLANS
       </button>
     </div>

@@ -110,7 +110,7 @@
             <div class="flex justify-center">
               <button
                 type="submit"
-                class="w-[170px] lg:w-[193px] h-[55px] lg:h-[60px] bg-[#eb3300] hover:bg-[#d42e00] text-white rounded font-normal text-base tracking-[0] leading-[26px] flex items-center justify-center"
+                class="w-[170px] lg:w-[193px] h-[55px] lg:h-[60px] bg-[#eb3300] hover:bg-[#d42e00] text-white font-normal text-base tracking-[0] leading-[26px] flex items-center justify-center"
               >
                 SUBMIT NOW
                 <ArrowRight class="ml-2 w-3.5 h-4" />

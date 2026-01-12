@@ -1,7 +1,7 @@
 <template>
   <header class="bg-[#0a0a0a] text-white top-0 left-0 right-0 z-50">
     <div class="relative">
-      <nav class="relative z-10">
+      <nav class="relative z-20">
         <div
           class="container px-4 lg:mx-auto lg:px-28 sm:justify-center justify-end"
         >
@@ -47,10 +47,10 @@
             </div>
 
             <div
-              class="hidden lg:flex items-center space-x-4 xl:space-x-6 shrink-0 ml-auto"
+              class="hidden lg:flex items-center space-x-4 xl:space-x-6 shrink-0 ml-auto relative"
             >
-              <NuxtLink
-                to="/location"
+              <button
+                @click="toggleLocationPopup"
                 class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors whitespace-nowrap"
               >
                 <svg
@@ -67,7 +67,67 @@
                 <span class="font-normal tracking-wider text-sm xl:text-base"
                   >OFFICE LOCATION</span
                 >
-              </NuxtLink>
+              </button>
+
+              <!-- Location Popup with Map -->
+              <div
+                v-if="isLocationPopupOpen"
+                class="fixed top-20 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden"
+                style="z-index: 999999"
+                @click.stop
+              >
+                <div class="bg-gradient-to-r from-[#ff4500] to-[#ff6b35] p-3">
+                  <div class="flex items-center justify-between">
+                    <h3
+                      class="text-white font-bold text-base flex items-center gap-2"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      Our Location
+                    </h3>
+                    <button
+                      @click="toggleLocationPopup"
+                      class="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Embedded Google Map Only -->
+                <div class="w-full h-80">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1887839297943!2d-74.00601492346444!3d40.74844097138558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1704915573394!5m2!1sen!2sus"
+                    width="100%"
+                    height="100%"
+                    style="border: 0"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                  ></iframe>
+                </div>
+              </div>
             </div>
             <button
               @click="toggleMobileMenu"
@@ -110,16 +170,20 @@
       <div class="relative overflow-hidden bg-[#1a1a1a] hidden lg:block">
         <div class="absolute inset-0">
           <div
-            class="absolute left-0 top-0 bottom-0 w-[20%] md:w-[20%] xl:w-[25%] bg-[#ff4500]"
+            class="absolute left-0 top-0 bottom-0 w-[18%] lg:w-[17%] xl:w-[16%] 2xl:w-[17%] bg-[#ff4500]"
             style="clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%)"
           ></div>
         </div>
 
-        <div class="relative z-10 container mx-auto px-4 lg:px-20">
+        <div
+          class="relative z-10 container mx-auto px-4 lg:px-8 xl:px-12 2xl:px-16"
+        >
           <div
-            class="flex flex-col lg:flex-row ml-40 justify-start items-start lg:items-center lg:justify-center py-4 space-y-4 lg:space-y-0 md:space-x-6 lg:space-x-8 xl:space-x-12"
+            class="flex flex-col lg:flex-row items-start lg:items-center justify-between py-4 space-y-4 lg:space-y-0 gap-3 lg:gap-4 xl:gap-5"
           >
-            <div class="flex items-center space-x-2 shrink-0">
+            <div
+              class="flex items-center space-x-2 shrink-0 lg:ml-[19%] xl:ml-[17%] 2xl:ml-[18%]"
+            >
               <div
                 class="flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12"
               >
@@ -207,14 +271,12 @@
               </div>
             </div>
 
-            <div
-              class="flex items-center space-x-3 lg:space-x-4 ml-14 shrink-0"
-            >
+            <div class="flex items-center space-x-3 lg:space-x-4 shrink-0">
               <button
                 @click="scrollToSection('book')"
-                class="bg-[#ff4500] text-white font-bold text-sm uppercase cursor-pointer tracking-wider px-10 py-4 hover:bg-[#cc3700] transition-colors"
+                class="bg-[#ff4500] text-white font-bold text-sm uppercase cursor-pointer tracking-wider px-8 lg:px-10 py-3 lg:py-4 hover:bg-[#cc3700] transition-colors"
               >
-                GET A QUOTE
+                 GET AN APPOINTMENT
               </button>
             </div>
           </div>
@@ -278,19 +340,6 @@
         >
           CONTACT US
         </a>
-        <NuxtLink
-          to="/location"
-          class="flex items-center space-x-2 text-[#ff4444] hover:text-red-400 transition-colors py-2"
-        >
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <span class="font-normal">OFFICE LOCATION</span>
-        </NuxtLink>
         <button
           @click="
             scrollToSection('book');
@@ -298,7 +347,7 @@
           "
           class="w-full bg-[#ff4500] text-white font-bold text-sm uppercase tracking-wider px-10 py-4 hover:bg-[#cc3700] transition-colors"
         >
-          GET A QUOTE
+          GET AN APPOINTMENT
         </button>
       </div>
     </div>
@@ -307,10 +356,38 @@
 
 <script setup>
 const isMobileMenuOpen = ref(false);
+const isLocationPopupOpen = ref(false);
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value;
 };
+
+const toggleLocationPopup = () => {
+  isLocationPopupOpen.value = !isLocationPopupOpen.value;
+  // Close mobile menu when opening location popup
+  if (isLocationPopupOpen.value && isMobileMenuOpen.value) {
+    isMobileMenuOpen.value = false;
+  }
+};
+
+// Close popup when clicking outside
+const handleClickOutside = (event) => {
+  if (isLocationPopupOpen.value) {
+    const popup = event.target.closest(".absolute.top-full");
+    const button = event.target.closest("button");
+    if (!popup && !button) {
+      isLocationPopupOpen.value = false;
+    }
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 
 const scrollToSection = (sectionId) => {
   const element = document.getElementById(sectionId);
