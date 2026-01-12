@@ -142,7 +142,7 @@
               <button
                 type="submit"
                 :disabled="isSubmitting"
-                class="w-[170px] lg:w-[193px] h-[55px] lg:h-[60px] bg-[#eb3300] hover:bg-[#d42e00] text-white font-normal text-base tracking-[0] leading-[26px] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                class="w-[170px] lg:w-[193px] h-[55px] lg:h-[60px] bg-[#eb3300] cursor-pointer hover:bg-[#d42e00] text-white font-normal text-base tracking-[0] leading-[26px] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <span v-if="!isSubmitting">SUBMIT NOW</span>
                 <span v-else class="flex items-center gap-2">

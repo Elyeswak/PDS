@@ -11,7 +11,7 @@
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 container mx-auto px-14">
+    <div class="relative z-10 container mx-auto px-6 md:px-12 lg:px-14">
       <div class="flex items-center justify-between max-w-6xl mx-auto">
         <!-- LEFT TEXT -->
         <div class="max-w-2xl">

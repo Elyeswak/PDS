@@ -433,7 +433,7 @@
                     <th
                       class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
                     >
-                      VIN / Reason
+                      VIN / Problem
                     </th>
                     <th
                       class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider"
@@ -1050,7 +1050,7 @@
                   </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-xs text-gray-500 font-medium mb-0.5">Reason</p>
+                  <p class="text-xs text-gray-500 font-medium mb-0.5">Problem</p>
                   <p class="text-sm text-gray-900 break-words">
                     {{ selectedAppointment.reason }}
                   </p>

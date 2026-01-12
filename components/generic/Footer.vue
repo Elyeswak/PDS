@@ -121,27 +121,22 @@
 
         <div>
           <h5 class="font-bold mb-6 relative inline-block">
-            Newsletter
+            Our Location
             <span class="absolute bottom-0 left-0 w-12 h-0.5 bg-[#ff4500]"></span>
           </h5>
-          <p class="text-gray-400 mb-6 leading-relaxed">
-            Aplications prodize before front end vortals visualize front end
-          </p>
-          <form @submit.prevent="handleSubscribe" class="space-y-4">
-            <input
-              v-model="email"
-              type="email"
-              placeholder="Email Address"
-              class="w-full bg-[#252b3d] border border-gray-700 text-white px-4 py-3 focus:outline-none focus:border-[#ff4500] transition-colors"
-              required
-            />
-            <button
-              type="submit"
-              class="w-full bg-[#ff4500] hover:bg-[#ff5722] text-white font-semibold py-3 transition-colors"
-            >
-              Subscribe
-            </button>
-          </form>
+          
+          <!-- Embedded Google Map -->
+          <div class="w-full h-64 rounded-lg overflow-hidden border-2 border-gray-700 hover:border-[#ff4500] transition-colors">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1887839297943!2d-74.00601492346444!3d40.74844097138558!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1704915573394!5m2!1sen!2sus"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
         </div>
       </div>
     </div>
@@ -171,13 +166,6 @@
 </template>
 
 <script setup>
-const email = ref('');
-
-const handleSubscribe = () => {
-  console.log('Subscribe with email:', email.value);
-  email.value = '';
-};
-
 const scrollToSection = (sectionId) => {
   // Scroll to top first (for home)
   if (sectionId === 'home') {

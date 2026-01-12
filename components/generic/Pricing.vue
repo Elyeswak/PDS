@@ -92,7 +92,7 @@
           </div>
 
           <div class="px-10 pb-10 pt-10">
-            <button class="w-[204px] h-[60px] bg-neutral-950 hover:bg-neutral-950/90 font-normal text-white text-base text-center tracking-[0] leading-[26px]">
+            <button class="w-[204px] h-[60px] bg-neutral-950 hover:bg-neutral-950/90 font-bold cursor-pointer text-white text-base text-center tracking-[0] leading-[26px]">
               PURCHASE NOW
             </button>
           </div>

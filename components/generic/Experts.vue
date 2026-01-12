@@ -28,11 +28,6 @@
             <h3 class="text-lg font-semibold text-gray-900">Andrew Adrian</h3>
             <p class="text-[#ff4500] font-medium mt-1">Engine Expert</p>
           </div>
-          <div class="flex justify-center items-center gap-8 mt-6 text-gray-800">
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-facebook"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-twitter"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-linkedin"></i></a>
-          </div>
         </div>
       </div>
 
@@ -50,11 +45,6 @@
           <div>
             <h3 class="text-lg font-semibold text-gray-900">Kevin Martin</h3>
             <p class="text-[#ff4500] font-medium mt-1">Engine Expert</p>
-          </div>
-          <div class="flex justify-center items-center gap-8 mt-6 text-gray-800">
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-facebook"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-twitter"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-linkedin"></i></a>
           </div>
         </div>
       </div>
@@ -74,17 +64,8 @@
             <h3 class="text-lg font-semibold text-gray-900">Aiden Samuel</h3>
             <p class="text-[#ff4500] font-medium mt-1">Engine Expert</p>
           </div>
-          <div class="flex justify-center items-center gap-8 mt-6 text-gray-800">
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-facebook"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-twitter"></i></a>
-            <a href="#" class="hover:text-[#ff4500] text-2xl"><i class="mdi mdi-linkedin"></i></a>
-          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
-
-<script setup>
-// No logic needed
-</script>
